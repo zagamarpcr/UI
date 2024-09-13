@@ -135,7 +135,7 @@
                     )}
                     {showNotifications && (
                         <div className={`absolute inset-0 flex justify-center items-center bg-black bg-opacity-50 ${closingMenu ? 'slide-out-right' : ''}`} onClick={(e) => e.stopPropagation()}>
-                            <div className={`bg-gray-800 p-4 rounded-lg w-96 h-[calc(100%-600px)] ${closingMenu ? 'slide-out-right' : 'slide-in-right'}`}>
+                            <div className={`bg-gray-800 p-4 rounded-lg w-96 h-[calc(100%-300px)] ${closingMenu ? 'slide-out-right' : 'slide-in-right'}`}>
                                 <div
                                     className={`relative bg-gray-700 p-2 rounded-lg mb-2 ${hoveredNotification ? 'h-20' : 'h-16'} slide-down`}
                                     onMouseEnter={() => setHoveredNotification(true)}
@@ -154,8 +154,8 @@
                     {showSettings && !showAppearance && (
                         <div className={`absolute inset-0 flex justify-center items-center bg-black bg-opacity-50 ${closingMenu ? 'slide-out-right' : ''}`} onClick={(e) => e.stopPropagation()}>
                             <div className={`bg-gray-800 p-4 rounded-lg w-96 h-auto ${closingMenu ? 'slide-out-right' : 'slide-in-right'}`}>
-                                <div className="relative bg-gray-700 p-2 rounded-lg mb-2 flex justify-between items-center">
-                                    <span className="text-white">Settings</span>
+                                <div className="flex justify-between items-center mb-2">
+                                    <span className="text-white text-xl">Settings</span>
                                     <button className="text-white" onClick={closeMenus}>
                                         <i className="fas fa-times"></i>
                                     </button>
@@ -169,8 +169,8 @@
                     {showAppearance && (
                         <div className={`absolute inset-0 flex justify-center items-center bg-black bg-opacity-50 ${closingMenu ? 'slide-out-right' : ''}`} onClick={(e) => e.stopPropagation()}>
                             <div className={`bg-gray-800 p-4 rounded-lg w-96 h-auto ${closingMenu ? 'slide-out-right' : 'slide-in-right'}`}>
-                                <div className="relative bg-gray-700 p-2 rounded-lg mb-2 flex justify-between items-center">
-                                    <span className="text-white">Appearance</span>
+                                <div className="flex justify-between items-center mb-2">
+                                    <span className="text-white text-xl">Appearance</span>
                                     <button className="text-white" onClick={() => setShowAppearance(false)}>
                                         <i className="fas fa-arrow-left"></i> Back
                                     </button>
