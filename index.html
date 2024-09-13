@@ -56,6 +56,7 @@
             const [darkMode, setDarkMode] = React.useState(true);
             const [closingMenu, setClosingMenu] = React.useState(false);
             const [initialRender, setInitialRender] = React.useState(true);
+            const [activeTab, setActiveTab] = React.useState('Games');
 
             React.useEffect(() => {
                 const timer = setInterval(() => {
@@ -100,6 +101,10 @@
                 setShowNotifications(!showNotifications);
             };
 
+            const handleTabClick = (tab) => {
+                setActiveTab(tab);
+            };
+
             return (
                 <div className={`relative h-screen w-screen ${darkMode ? 'bg-gray-900 text-white' : 'bg-white text-black'}`} onClick={closeMenus}>
                     <nav className="flex justify-between items-center p-4 bg-black bg-opacity-50">
@@ -107,10 +112,19 @@
                             <img src="https://placehold.co/40x40" alt="Gaming Logo" className="mr-2" />
                             <span className="text-white text-xl font-bold">{currentTime}</span>
                         </div>
-                        <div className="flex space-x-4">
-                            <a href="#" className="text-white">Vojna</a>
-                            <a href="#" className="text-white">Timo</a>
-                            <a href="#" className="text-white">Men</a>
+                        <div className="relative flex space-x-4">
+                            <button
+                                className={`px-4 py-2 rounded-full transition-transform duration-300 ${activeTab === 'Games' ? 'bg-white text-black text-lg transform scale-105 z-30' : 'bg-gray-700 text-white text-sm transform scale-90 -translate-x-4'}`}
+                                onClick={() => handleTabClick('Games')}
+                            >
+                                Games
+                            </button>
+                            <button
+                                className={`px-4 py-2 rounded-full transition-transform duration-300 ${activeTab === 'People' ? 'bg-white text-black text-lg transform scale-105 z-30' : 'bg-gray-700 text-white text-sm transform scale-90 translate-x-4'}`}
+                                onClick={() => handleTabClick('People')}
+                            >
+                                People
+                            </button>
                         </div>
                         <div className="flex space-x-4 items-center">
                             <img src="https://placehold.co/40x40" alt="User Icon" className="rounded-full" />
@@ -184,7 +198,7 @@
                                 </div>
                                 <div className="relative bg-gray-700 p-2 rounded-lg mb-2">
                                     <div className="mt-2">
-                                        <button className="text-white" onClick={toggleDarkMode}>
+                                        <button className="text-white bg-blue-500 px-4 py-2 rounded" onClick={toggleDarkMode}>
                                             {darkMode ? 'Light Mode' : 'Dark Mode'}
                                         </button>
                                     </div>
