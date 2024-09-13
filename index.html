@@ -55,6 +55,7 @@
             const [hoveredNotification, setHoveredNotification] = React.useState(false);
             const [darkMode, setDarkMode] = React.useState(true);
             const [closingMenu, setClosingMenu] = React.useState(false);
+            const [initialRender, setInitialRender] = React.useState(true);
 
             React.useEffect(() => {
                 const timer = setInterval(() => {
@@ -93,6 +94,12 @@
                 }, 500);
             };
 
+            const handleNotificationClick = (e) => {
+                e.stopPropagation();
+                setInitialRender(false);
+                setShowNotifications(!showNotifications);
+            };
+
             return (
                 <div className={`relative h-screen w-screen ${darkMode ? 'bg-gray-900 text-white' : 'bg-white text-black'}`} onClick={closeMenus}>
                     <nav className="flex justify-between items-center p-4 bg-black bg-opacity-50">
@@ -109,7 +116,7 @@
                             <img src="https://placehold.co/40x40" alt="User Icon" className="rounded-full" />
                             <i className="fas fa-search text-white"></i>
                             <i className="fas fa-cog text-white cursor-pointer" onClick={(e) => { e.stopPropagation(); setShowSettings(!showSettings); }}></i>
-                            <i className="fas fa-bell text-white cursor-pointer" onClick={(e) => { e.stopPropagation(); setShowNotifications(!showNotifications); }}></i>
+                            <i className="fas fa-bell text-white cursor-pointer" onClick={handleNotificationClick}></i>
                         </div>
                     </nav>
                     <div className="absolute inset-0 flex justify-end items-start mt-20">
@@ -133,7 +140,7 @@
                             <span className="text-white">{hoveredApp}</span>
                         </div>
                     )}
-                    {showNotifications && (
+                    {showNotifications && !initialRender && (
                         <div className={`absolute inset-0 flex justify-center items-center bg-black bg-opacity-50 ${closingMenu ? 'slide-out-right' : ''}`} onClick={(e) => e.stopPropagation()}>
                             <div className={`bg-gray-800 p-4 rounded-lg w-96 h-[calc(100%-300px)] ${closingMenu ? 'slide-out-right' : 'slide-in-right'}`}>
                                 <div
