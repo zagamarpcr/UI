@@ -1,0 +1,195 @@
+<html></html>
+<head>
+    <title>Gaming</title>
+    <script src="https://unpkg.com/react/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: url('https://placehold.co/1920x1080') no-repeat center center fixed;
+            background-size: cover;
+        }
+        .slide-in-right {
+            animation: slide-in-right 0.5s forwards;
+        }
+        @keyframes slide-in-right {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        .slide-out-right {
+            animation: slide-out-right 0.5s forwards;
+        }
+        @keyframes slide-out-right {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+        }
+        .slide-down {
+            transition: height 0.5s ease;
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-white">
+    <div id="root"></div>
+    <script type="text/babel">
+        const App = () => {
+            const [hoveredApp, setHoveredApp] = React.useState('');
+            const [currentTime, setCurrentTime] = React.useState(new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
+            const [showNotifications, setShowNotifications] = React.useState(false);
+            const [showSettings, setShowSettings] = React.useState(false);
+            const [showAppearance, setShowAppearance] = React.useState(false);
+            const [hoveredNotification, setHoveredNotification] = React.useState(false);
+            const [darkMode, setDarkMode] = React.useState(true);
+            const [closingMenu, setClosingMenu] = React.useState(false);
+
+            React.useEffect(() => {
+                const timer = setInterval(() => {
+                    setCurrentTime(new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
+                }, 1000);
+
+                const handleKeyDown = (event) => {
+                    if (event.key === 'Escape') {
+                        closeMenus();
+                    }
+                };
+
+                document.addEventListener('keydown', handleKeyDown);
+
+                return () => {
+                    clearInterval(timer);
+                    document.removeEventListener('keydown', handleKeyDown);
+                };
+            }, []);
+
+            const toggleDarkMode = () => {
+                setDarkMode(!darkMode);
+                document.body.classList.toggle('bg-gray-900', darkMode);
+                document.body.classList.toggle('bg-white', !darkMode);
+                document.body.classList.toggle('text-white', darkMode);
+                document.body.classList.toggle('text-black', !darkMode);
+            };
+
+            const closeMenus = () => {
+                setClosingMenu(true);
+                setTimeout(() => {
+                    setShowNotifications(false);
+                    setShowSettings(false);
+                    setShowAppearance(false);
+                    setClosingMenu(false);
+                }, 500);
+            };
+
+            return (
+                <div className={`relative h-screen w-screen ${darkMode ? 'bg-gray-900 text-white' : 'bg-white text-black'}`} onClick={closeMenus}>
+                    <nav className="flex justify-between items-center p-4 bg-black bg-opacity-50">
+                        <div className="flex items-center">
+                            <img src="https://placehold.co/40x40" alt="Gaming Logo" className="mr-2" />
+                            <span className="text-white text-xl font-bold">{currentTime}</span>
+                        </div>
+                        <div className="flex space-x-4">
+                            <a href="#" className="text-white">Vojna</a>
+                            <a href="#" className="text-white">Timo</a>
+                            <a href="#" className="text-white">Men</a>
+                        </div>
+                        <div className="flex space-x-4 items-center">
+                            <img src="https://placehold.co/40x40" alt="User Icon" className="rounded-full" />
+                            <i className="fas fa-search text-white"></i>
+                            <i className="fas fa-cog text-white cursor-pointer" onClick={(e) => { e.stopPropagation(); setShowSettings(!showSettings); }}></i>
+                            <i className="fas fa-bell text-white cursor-pointer" onClick={(e) => { e.stopPropagation(); setShowNotifications(!showNotifications); }}></i>
+                        </div>
+                    </nav>
+                    <div className="absolute inset-0 flex justify-end items-start mt-20">
+                        <div className="bg-black bg-opacity-70 p-4 rounded-lg w-56 h-[calc(100%-5rem)] overflow-y-scroll mr-4">
+                            <div className="flex flex-col space-y-2">
+                                {['App 1', 'App 2', 'App 3', 'App 4', 'App 5', 'App 6', 'App 7', 'App 8'].map((app, index) => (
+                                    <div
+                                        key={index}
+                                        className="bg-black p-2 rounded-lg"
+                                        onMouseEnter={() => setHoveredApp(app)}
+                                        onMouseLeave={() => setHoveredApp('')}
+                                    >
+                                        <img src={`https://placehold.co/160x160`} alt={app} className="rounded-lg mb-1 w-full h-full object-cover" />
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                    {hoveredApp && (
+                        <div className="absolute bottom-4 left-4 bg-black bg-opacity-70 p-2 rounded-lg">
+                            <span className="text-white">{hoveredApp}</span>
+                        </div>
+                    )}
+                    {showNotifications && (
+                        <div className={`absolute inset-0 flex justify-center items-center bg-black bg-opacity-50 ${closingMenu ? 'slide-out-right' : ''}`} onClick={(e) => e.stopPropagation()}>
+                            <div className={`bg-gray-800 p-4 rounded-lg w-96 h-[calc(100%-600px)] ${closingMenu ? 'slide-out-right' : 'slide-in-right'}`}>
+                                <div
+                                    className={`relative bg-gray-700 p-2 rounded-lg mb-2 ${hoveredNotification ? 'h-20' : 'h-16'} slide-down`}
+                                    onMouseEnter={() => setHoveredNotification(true)}
+                                    onMouseLeave={() => setHoveredNotification(false)}
+                                >
+                                    <span className="text-white">Example Notification</span>
+                                    {hoveredNotification && (
+                                        <button className="absolute bottom-2 right-2 text-red-500">
+                                            <i className="fas fa-trash"></i>
+                                        </button>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+                    )}
+                    {showSettings && !showAppearance && (
+                        <div className={`absolute inset-0 flex justify-center items-center bg-black bg-opacity-50 ${closingMenu ? 'slide-out-right' : ''}`} onClick={(e) => e.stopPropagation()}>
+                            <div className={`bg-gray-800 p-4 rounded-lg w-96 h-auto ${closingMenu ? 'slide-out-right' : 'slide-in-right'}`}>
+                                <div className="relative bg-gray-700 p-2 rounded-lg mb-2 flex justify-between items-center">
+                                    <span className="text-white">Settings</span>
+                                    <button className="text-white" onClick={closeMenus}>
+                                        <i className="fas fa-times"></i>
+                                    </button>
+                                </div>
+                                <div className="relative bg-gray-700 p-2 rounded-lg mb-2">
+                                    <span className="text-white cursor-pointer" onClick={() => setShowAppearance(true)}>Appearance</span>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+                    {showAppearance && (
+                        <div className={`absolute inset-0 flex justify-center items-center bg-black bg-opacity-50 ${closingMenu ? 'slide-out-right' : ''}`} onClick={(e) => e.stopPropagation()}>
+                            <div className={`bg-gray-800 p-4 rounded-lg w-96 h-auto ${closingMenu ? 'slide-out-right' : 'slide-in-right'}`}>
+                                <div className="relative bg-gray-700 p-2 rounded-lg mb-2 flex justify-between items-center">
+                                    <span className="text-white">Appearance</span>
+                                    <button className="text-white" onClick={() => setShowAppearance(false)}>
+                                        <i className="fas fa-arrow-left"></i> Back
+                                    </button>
+                                </div>
+                                <div className="relative bg-gray-700 p-2 rounded-lg mb-2">
+                                    <div className="mt-2">
+                                        <button className="text-white" onClick={toggleDarkMode}>
+                                            {darkMode ? 'Light Mode' : 'Dark Mode'}
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+                </div>
+            );
+        };
+
+        ReactDOM.render(<App />, document.getElementById('root')
+    </script>
+</body>
+<html>
