@@ -1,6 +1,6 @@
 <html>
 <head>
-    <title>Gaming</title>
+    <title>Quantum Vortex Network</title>
     <script src="https://unpkg.com/react/umd/react.development.js"></script>
     <script src="https://unpkg.com/react-dom/umd/react-dom.development.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.js"></script>
@@ -40,6 +40,20 @@
         .slide-down {
             transition: height 0.5s ease;
         }
+        .float-up {
+            animation: float-up 1s forwards;
+        }
+        @keyframes float-up {
+            0% {
+                transform: translateY(0) scale(1) rotate(0deg);
+            }
+            50% {
+                transform: translateY(-50vh) scale(1.5) rotate(180deg);
+            }
+            100% {
+                transform: translateY(-50vh) scale(2) rotate(360deg);
+            }
+        }
     </style>
 </head>
 <body>
@@ -56,6 +70,7 @@
             const [closingMenu, setClosingMenu] = React.useState(false);
             const [initialRender, setInitialRender] = React.useState(true);
             const [activeTab, setActiveTab] = React.useState('Games');
+            const [floatingApp, setFloatingApp] = React.useState(false);
 
             React.useEffect(() => {
                 const timer = setInterval(() => {
@@ -105,11 +120,18 @@
                 document.body.style.backgroundImage = randomBackground;
             };
 
+            const handleMinecraftClick = () => {
+                setFloatingApp(true);
+                setTimeout(() => {
+                    window.location.href = 'games/minecraft/Minecraft version 2.html';
+                }, 1000);
+            };
+
             return (
                 <div className={`relative h-screen w-screen`} onClick={closeMenus}>
                     <nav className="flex justify-between items-center p-4 bg-black bg-opacity-50">
                         <div className="flex items-center">
-                            <img src="https://placehold.co/40x40" alt="Gaming Logo" className="mr-2" />
+                            <img src="https://placehold.co/40x40" alt="Quantum Vortex Network Logo" className="mr-2" />
                             <span className="text-white text-xl font-bold">{currentTime}</span>
                         </div>
                         <div className="relative flex space-x-4">
@@ -136,7 +158,7 @@
                     <div className="absolute inset-0 flex justify-end items-start mt-20">
                         <div className="p-4 rounded-lg w-56 h-[calc(100%-5rem)] overflow-y-scroll mr-4">
                             <div className="flex flex-col space-y-2">
-                                <div className="bg-black p-2 rounded-lg" onMouseEnter={handleMouseEnter}>
+                                <div className={`bg-black p-2 rounded-lg ${floatingApp ? 'float-up' : ''}`} onMouseEnter={handleMouseEnter} onClick={handleMinecraftClick}>
                                     <img src="images/icons/minecraft.jpeg" alt="Minecraft" className="rounded-lg mb-1 w-full h-full object-cover" />
                                 </div>
                                 {['App 2', 'App 3', 'App 4', 'App 5', 'App 6', 'App 7', 'App 8'].map((app, index) => (
@@ -201,7 +223,7 @@
                                 </div>
                                 <div className="relative bg-gray-700 p-2 rounded-lg mb-2">
                                     <div className="mt-2">
-                                        <button className="text-white bg-blue-500 px-4 py-2 rounded" onClick={toggleDarkMode}>
+                                        <button className="text-white bg-blue-500 px-4 py-2 rounded">
                                             Dark Mode
                                         </button>
                                     </div>
