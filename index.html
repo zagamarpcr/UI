@@ -1,6 +1,6 @@
 <html>
 <head>
-    <title>Gaming</title>
+    <title>Quantum Vortex Network</title>
     <script src="https://unpkg.com/react/umd/react.development.js"></script>
     <script src="https://unpkg.com/react-dom/umd/react-dom.development.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.js"></script>
@@ -9,8 +9,6 @@
     <style>
         body {
             font-family: 'Arial', sans-serif;
-            background: url('images/background/minecraftbg1.png') no-repeat center center fixed;
-            background-size: cover;
             transition: background 0.5s ease;
         }
         .slide-in-right {
@@ -78,14 +76,6 @@
                 };
             }, []);
 
-            const toggleDarkMode = () => {
-                setDarkMode(!darkMode);
-                document.body.classList.toggle('bg-gray-900', darkMode);
-                document.body.classList.toggle('bg-white', !darkMode);
-                document.body.classList.toggle('text-white', darkMode);
-                document.body.classList.toggle('text-black', !darkMode);
-            };
-
             const closeMenus = () => {
                 setClosingMenu(true);
                 setTimeout(() => {
@@ -115,7 +105,7 @@
             };
 
             return (
-                <div className={`relative h-screen w-screen ${darkMode ? 'bg-gray-900 text-white' : 'bg-white text-black'}`} onClick={closeMenus}>
+                <div className={`relative h-screen w-screen`} onClick={closeMenus}>
                     <nav className="flex justify-between items-center p-4 bg-black bg-opacity-50">
                         <div className="flex items-center">
                             <img src="https://placehold.co/40x40" alt="Gaming Logo" className="mr-2" />
@@ -167,7 +157,7 @@
                         </div>
                     )}
                     {showNotifications && !initialRender && (
-                        <div className={`absolute inset-0 flex justify-center items-center bg-black bg-opacity-50 ${closingMenu ? 'slide-out-right' : ''}`} onClick={(e) => e.stopPropagation()}>
+                        <div className={`absolute inset-0 flex justify-center items-center ${closingMenu ? 'slide-out-right' : ''}`} onClick={(e) => e.stopPropagation()}>
                             <div className={`bg-gray-800 p-4 rounded-lg w-96 h-[calc(100%-300px)] ${closingMenu ? 'slide-out-right' : 'slide-in-right'}`}>
                                 <div
                                     className={`relative bg-gray-700 p-2 rounded-lg mb-2 ${hoveredNotification ? 'h-20' : 'h-16'} slide-down`}
@@ -185,7 +175,7 @@
                         </div>
                     )}
                     {showSettings && !showAppearance && (
-                        <div className={`absolute inset-0 flex justify-center items-center bg-black bg-opacity-50 ${closingMenu ? 'slide-out-right' : ''}`} onClick={(e) => e.stopPropagation()}>
+                        <div className={`absolute inset-0 flex justify-center items-center ${closingMenu ? 'slide-out-right' : ''}`} onClick={(e) => e.stopPropagation()}>
                             <div className={`bg-gray-800 p-4 rounded-lg w-96 h-auto ${closingMenu ? 'slide-out-right' : 'slide-in-right'}`}>
                                 <div className="flex justify-between items-center mb-2">
                                     <span className="text-white text-xl">Settings</span>
@@ -200,7 +190,7 @@
                         </div>
                     )}
                     {showAppearance && (
-                        <div className={`absolute inset-0 flex justify-center items-center bg-black bg-opacity-50 ${closingMenu ? 'slide-out-right' : ''}`} onClick={(e) => e.stopPropagation()}>
+                        <div className={`absolute inset-0 flex justify-center items-center ${closingMenu ? 'slide-out-right' : ''}`} onClick={(e) => e.stopPropagation()}>
                             <div className={`bg-gray-800 p-4 rounded-lg w-96 h-auto ${closingMenu ? 'slide-out-right' : 'slide-in-right'}`}>
                                 <div className="flex justify-between items-center mb-2">
                                     <span className="text-white text-xl">Appearance</span>
@@ -211,7 +201,7 @@
                                 <div className="relative bg-gray-700 p-2 rounded-lg mb-2">
                                     <div className="mt-2">
                                         <button className="text-white bg-blue-500 px-4 py-2 rounded" onClick={toggleDarkMode}>
-                                            {darkMode ? 'Light Mode' : 'Dark Mode'}
+                                            Dark Mode
                                         </button>
                                     </div>
                                 </div>
