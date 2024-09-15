@@ -1,6 +1,6 @@
 <html>
 <head>
-    <title>Quantum Vortex Network</title>
+    <title>Gaming</title>
     <script src="https://unpkg.com/react/umd/react.development.js"></script>
     <script src="https://unpkg.com/react-dom/umd/react-dom.development.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.js"></script>
@@ -97,11 +97,12 @@
             };
 
             const handleMouseEnter = () => {
-                document.body.style.backgroundImage = "url('images/background/Juggyboi climing.jpg')";
-            };
-
-            const handleMouseLeave = () => {
-                document.body.style.backgroundImage = "url('images/background/minecraftbg1.png')";
+                const backgrounds = [
+                    "url('images/background/minecraftbg1.png')",
+                    "url('images/background/Juggyboi climing.jpg')"
+                ];
+                const randomBackground = backgrounds[Math.floor(Math.random() * backgrounds.length)];
+                document.body.style.backgroundImage = randomBackground;
             };
 
             return (
@@ -135,7 +136,7 @@
                     <div className="absolute inset-0 flex justify-end items-start mt-20">
                         <div className="p-4 rounded-lg w-56 h-[calc(100%-5rem)] overflow-y-scroll mr-4">
                             <div className="flex flex-col space-y-2">
-                                <div className="bg-black p-2 rounded-lg" onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
+                                <div className="bg-black p-2 rounded-lg" onMouseEnter={handleMouseEnter}>
                                     <img src="images/icons/minecraft.jpeg" alt="Minecraft" className="rounded-lg mb-1 w-full h-full object-cover" />
                                 </div>
                                 {['App 2', 'App 3', 'App 4', 'App 5', 'App 6', 'App 7', 'App 8'].map((app, index) => (
