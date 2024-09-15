@@ -11,6 +11,7 @@
             font-family: 'Arial', sans-serif;
             background: url('images/background/minecraftbg1.png') no-repeat center center fixed;
             background-size: cover;
+            transition: background 0.5s ease;
         }
         .slide-in-right {
             animation: slide-in-right 0.5s forwards;
@@ -105,6 +106,14 @@
                 setActiveTab(tab);
             };
 
+            const handleMouseEnter = () => {
+                document.body.style.backgroundImage = "url('images/background/Juggyboi climing.jpg')";
+            };
+
+            const handleMouseLeave = () => {
+                document.body.style.backgroundImage = "url('images/background/minecraftbg1.png')";
+            };
+
             return (
                 <div className={`relative h-screen w-screen ${darkMode ? 'bg-gray-900 text-white' : 'bg-white text-black'}`} onClick={closeMenus}>
                     <nav className="flex justify-between items-center p-4 bg-black bg-opacity-50">
@@ -136,7 +145,7 @@
                     <div className="absolute inset-0 flex justify-end items-start mt-20">
                         <div className="bg-black bg-opacity-70 p-4 rounded-lg w-56 h-[calc(100%-5rem)] overflow-y-scroll mr-4">
                             <div className="flex flex-col space-y-2">
-                                <div className="bg-black p-2 rounded-lg">
+                                <div className="bg-black p-2 rounded-lg" onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
                                     <img src="images/icons/minecraft.jpeg" alt="Minecraft" className="rounded-lg mb-1 w-full h-full object-cover" />
                                 </div>
                                 {['App 2', 'App 3', 'App 4', 'App 5', 'App 6', 'App 7', 'App 8'].map((app, index) => (
