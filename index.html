@@ -12,7 +12,15 @@
             transition: background 0.5s ease;
         }
         .expand-bubble {
-            animation: expand-bubble 1s forwards, fade-out 1s forwards 1s;
+            animation: show-bubble 1s forwards, expand-bubble 1s forwards 1s, fade-out 1s forwards 2s;
+        }
+        @keyframes show-bubble {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
         }
         @keyframes expand-bubble {
             from {
@@ -103,7 +111,7 @@
                     setTimeout(() => {
                         window.location.href = 'games/minecraft/Minecraft version 2.html';
                     }, 1000);
-                }, 2000);
+                }, 3000);
             };
 
             return (
