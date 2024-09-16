@@ -11,26 +11,15 @@
             font-family: 'Arial', sans-serif;
             transition: background 0.5s ease;
         }
-        .float-to-center {
-            animation: float-to-center 1s forwards, expand-bounce 1s forwards, fade-out 1s forwards 1s;
+        .expand-bubble {
+            animation: expand-bubble 1s forwards, fade-out 1s forwards 1s;
         }
-        @keyframes float-to-center {
+        @keyframes expand-bubble {
             from {
-                transform: translate(0, 0);
-            }
-            to {
-                transform: translate(calc(50vw - 50%), calc(50vh - 50%));
-            }
-        }
-        @keyframes expand-bounce {
-            0% {
                 transform: scale(1);
             }
-            50% {
-                transform: scale(1.5);
-            }
-            100% {
-                transform: scale(2);
+            to {
+                transform: scale(100);
             }
         }
         @keyframes fade-out {
@@ -57,7 +46,7 @@
             const [closingMenu, setClosingMenu] = React.useState(false);
             const [initialRender, setInitialRender] = React.useState(true);
             const [activeTab, setActiveTab] = React.useState('Games');
-            const [floatingApp, setFloatingApp] = React.useState(false);
+            const [showBubble, setShowBubble] = React.useState(false);
 
             React.useEffect(() => {
                 const timer = setInterval(() => {
@@ -108,7 +97,7 @@
             };
 
             const handleMinecraftClick = () => {
-                setFloatingApp(true);
+                setShowBubble(true);
                 setTimeout(() => {
                     document.body.style.backgroundColor = 'black';
                     setTimeout(() => {
@@ -148,7 +137,7 @@
                     <div className="absolute inset-0 flex justify-end items-start mt-20">
                         <div className="p-4 rounded-lg w-56 h-[calc(100%-5rem)] overflow-y-scroll mr-4">
                             <div className="flex flex-col space-y-2">
-                                <div className={`bg-black p-2 rounded-lg ${floatingApp ? 'float-to-center z-50' : ''}`} onMouseEnter={handleMouseEnter} onClick={handleMinecraftClick}>
+                                <div className="bg-black p-2 rounded-lg" onMouseEnter={handleMouseEnter} onClick={handleMinecraftClick}>
                                     <img src="images/icons/minecraft.jpeg" alt="Minecraft" className="rounded-lg mb-1 w-full h-full object-cover" />
                                 </div>
                                 {['App 2', 'App 3', 'App 4', 'App 5', 'App 6', 'App 7', 'App 8'].map((app, index) => (
@@ -167,6 +156,13 @@
                     {hoveredApp && (
                         <div className="absolute bottom-4 left-4 bg-black bg-opacity-70 p-2 rounded-lg">
                             <span className="text-white">{hoveredApp}</span>
+                        </div>
+                    )}
+                    {showBubble && (
+                        <div className="fixed inset-0 flex items-center justify-center">
+                            <div className="expand-bubble">
+                                <img src="images/icons/minecraft.jpeg" alt="Minecraft Bubble" className="rounded-full" />
+                            </div>
                         </div>
                     )}
                     {showNotifications && !initialRender && (
