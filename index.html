@@ -12,7 +12,7 @@
             transition: background 0.5s ease;
         }
         .expand-bubble {
-            animation: show-bubble 1s forwards, expand-bubble 1s forwards 1s, fade-out 1s forwards 2s;
+            animation: show-bubble 1s forwards, expand-bubble 1s forwards 1s, fade-to-black 1s forwards 2s;
         }
         @keyframes show-bubble {
             from {
@@ -30,12 +30,12 @@
                 transform: scale(100);
             }
         }
-        @keyframes fade-out {
+        @keyframes fade-to-black {
             from {
-                opacity: 1;
+                background-color: transparent;
             }
             to {
-                opacity: 0;
+                background-color: black;
             }
         }
     </style>
