@@ -12,7 +12,7 @@
             transition: background 0.5s ease;
         }
         .expand-bubble {
-            animation: show-bubble 1s forwards, expand-bubble 1s forwards 1s, fade-to-black 1s forwards 2s, fade-out 1s forwards 3s;
+            animation: show-bubble 1s forwards, expand-bubble 1s forwards 1s, fade-to-black 1s forwards 2s;
         }
         @keyframes show-bubble {
             from {
@@ -38,14 +38,6 @@
                 filter: brightness(0);
             }
         }
-        @keyframes fade-out {
-            from {
-                opacity: 1;
-            }
-            to {
-                opacity: 0;
-            }
-        }
     </style>
 </head>
 <body>
@@ -63,6 +55,7 @@
             const [initialRender, setInitialRender] = React.useState(true);
             const [activeTab, setActiveTab] = React.useState('Games');
             const [showBubble, setShowBubble] = React.useState(false);
+            const [showMinecraftOverlay, setShowMinecraftOverlay] = React.useState(false);
 
             React.useEffect(() => {
                 const timer = setInterval(() => {
@@ -115,9 +108,7 @@
             const handleMinecraftClick = () => {
                 setShowBubble(true);
                 setTimeout(() => {
-                    setTimeout(() => {
-                        window.location.href = 'games/minecraft/Minecraft version 2.html';
-                    }, 1000);
+                    setShowMinecraftOverlay(true);
                 }, 3000);
             };
 
@@ -178,6 +169,11 @@
                             <div className="expand-bubble">
                                 <img src="images/icons/minecraft.jpeg" alt="Minecraft Bubble" className="rounded-full" />
                             </div>
+                        </div>
+                    )}
+                    {showMinecraftOverlay && (
+                        <div className="fixed inset-0 bg-black flex items-center justify-center">
+                            <iframe src="games/minecraft/Minecraft version 2.html" className="w-full h-full"></iframe>
                         </div>
                     )}
                     {showNotifications && !initialRender && (
