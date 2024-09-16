@@ -12,7 +12,7 @@
             transition: background 0.5s ease;
         }
         .expand-bubble {
-            animation: show-bubble 1s forwards, expand-bubble 1s forwards 1s, fade-to-black 1s forwards 2s;
+            animation: show-bubble 1s forwards, expand-bubble 1s forwards 1s, fade-to-black 1s forwards 2s, fade-out 1s forwards 3s;
         }
         @keyframes show-bubble {
             from {
@@ -32,10 +32,18 @@
         }
         @keyframes fade-to-black {
             from {
-                background-color: transparent;
+                filter: brightness(1);
             }
             to {
-                background-color: black;
+                filter: brightness(0);
+            }
+        }
+        @keyframes fade-out {
+            from {
+                opacity: 1;
+            }
+            to {
+                opacity: 0;
             }
         }
     </style>
@@ -107,7 +115,6 @@
             const handleMinecraftClick = () => {
                 setShowBubble(true);
                 setTimeout(() => {
-                    document.body.style.backgroundColor = 'black';
                     setTimeout(() => {
                         window.location.href = 'games/minecraft/Minecraft version 2.html';
                     }, 1000);
