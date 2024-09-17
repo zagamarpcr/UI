@@ -64,6 +64,7 @@
             const [activeTab, setActiveTab] = React.useState('Games');
             const [showBubble, setShowBubble] = React.useState(false);
             const [showMinecraftOverlay, setShowMinecraftOverlay] = React.useState(false);
+            const [showLogo, setShowLogo] = React.useState(true);
 
             React.useEffect(() => {
                 const timer = setInterval(() => {
@@ -71,9 +72,10 @@
                 }, 1000);
 
                 const handleKeyDown = (event) => {
-                    if (event.key === 'Escape') {
+                    if (event.ctrlKey && event.key === 'Escape') {
                         if (showMinecraftOverlay) {
                             setShowMinecraftOverlay(false);
+                            setShowBubble(false);
                         } else {
                             closeMenus();
                         }
@@ -121,37 +123,42 @@
                 setShowBubble(true);
                 setTimeout(() => {
                     setShowMinecraftOverlay(true);
+                    setTimeout(() => {
+                        setShowLogo(false);
+                    }, 2000);
                 }, 3000);
             };
 
             return (
                 <div className={`relative h-screen w-screen`} onClick={closeMenus}>
-                    <nav className="flex justify-between items-center p-4 bg-black bg-opacity-50">
-                        <div className="flex items-center">
-                            <img src="https://placehold.co/40x40" alt="Quantum Vortex Network Logo" className="mr-2" />
-                            <span className="text-white text-xl font-bold">{currentTime}</span>
-                        </div>
-                        <div className="relative flex space-x-4">
-                            <button
-                                className={`px-4 py-2 rounded-full transition-transform duration-300 ${activeTab === 'Games' ? 'bg-white text-black text-lg transform scale-105 z-30' : 'bg-gray-700 text-white text-sm transform scale-90 -translate-x-4'}`}
-                                onClick={() => handleTabClick('Games')}
-                            >
-                                Games
-                            </button>
-                            <button
-                                className={`px-4 py-2 rounded-full transition-transform duration-300 ${activeTab === 'People' ? 'bg-white text-black text-lg transform scale-105 z-30' : 'bg-gray-700 text-white text-sm transform scale-90 translate-x-4'}`}
-                                onClick={() => handleTabClick('People')}
-                            >
-                                People
-                            </button>
-                        </div>
-                        <div className="flex space-x-4 items-center">
-                            <img src="https://placehold.co/40x40" alt="User Icon" className="rounded-full" />
-                            <i className="fas fa-search text-white"></i>
-                            <i className="fas fa-cog text-white cursor-pointer" onClick={(e) => { e.stopPropagation(); setShowSettings(!showSettings); }}></i>
-                            <i className="fas fa-bell text-white cursor-pointer" onClick={handleNotificationClick}></i>
-                        </div>
-                    </nav>
+                    {!showMinecraftOverlay && (
+                        <nav className="flex justify-between items-center p-4 bg-black bg-opacity-50">
+                            <div className="flex items-center">
+                                <img src="https://placehold.co/40x40" alt="Quantum Vortex Network Logo" className="mr-2" />
+                                <span className="text-white text-xl font-bold">{currentTime}</span>
+                            </div>
+                            <div className="relative flex space-x-4">
+                                <button
+                                    className={`px-4 py-2 rounded-full transition-transform duration-300 ${activeTab === 'Games' ? 'bg-white text-black text-lg transform scale-105 z-30' : 'bg-gray-700 text-white text-sm transform scale-90 -translate-x-4'}`}
+                                    onClick={() => handleTabClick('Games')}
+                                >
+                                    Games
+                                </button>
+                                <button
+                                    className={`px-4 py-2 rounded-full transition-transform duration-300 ${activeTab === 'People' ? 'bg-white text-black text-lg transform scale-105 z-30' : 'bg-gray-700 text-white text-sm transform scale-90 translate-x-4'}`}
+                                    onClick={() => handleTabClick('People')}
+                                >
+                                    People
+                                </button>
+                            </div>
+                            <div className="flex space-x-4 items-center">
+                                <img src="https://placehold.co/40x40" alt="User Icon" className="rounded-full" />
+                                <i className="fas fa-search text-white"></i>
+                                <i className="fas fa-cog text-white cursor-pointer" onClick={(e) => { e.stopPropagation(); setShowSettings(!showSettings); }}></i>
+                                <i className="fas fa-bell text-white cursor-pointer" onClick={handleNotificationClick}></i>
+                            </div>
+                        </nav>
+                    )}
                     <div className="absolute inset-0 flex justify-end items-start mt-20">
                         <div className="p-4 rounded-lg w-56 h-[calc(100%-5rem)] overflow-y-scroll mr-4">
                             <div className="flex flex-col space-y-2">
@@ -176,7 +183,7 @@
                             <span className="text-white">{hoveredApp}</span>
                         </div>
                     )}
-                    {showBubble && (
+                    {showBubble && !showMinecraftOverlay && (
                         <div className="fixed inset-0 flex items-center justify-center">
                             <div className="expand-bubble">
                                 <img src="images/icons/minecraft.jpeg" alt="Minecraft Bubble" className="rounded-full" />
@@ -187,7 +194,7 @@
                         <div className="fixed inset-0 bg-black flex flex-col items-center justify-center animate-fade-in">
                             <nav className="flex justify-between items-center p-4 bg-black bg-opacity-50 w-full">
                                 <div className="flex items-center">
-                                    <img src="https://placehold.co/40x40" alt="Quantum Vortex Network Logo" className="mr-2" />
+                                    {showLogo && <img src="https://placehold.co/40x40" alt="Quantum Vortex Network Logo" className="mr-2" />}
                                     <span className="text-white text-xl font-bold">{currentTime}</span>
                                 </div>
                                 <div className="relative flex space-x-4">
@@ -212,6 +219,9 @@
                                 </div>
                             </nav>
                             <iframe src="games/minecraft/Minecraft version 2.html" className="w-full h-full"></iframe>
+                            <div className="fixed bottom-4 right-4 bg-gray-800 text-white p-2 rounded-lg">
+                                <span>Click Ctrl+Esc to close game</span>
+                            </div>
                         </div>
                     )}
                     {showNotifications && !initialRender && (
