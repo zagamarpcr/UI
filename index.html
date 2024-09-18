@@ -63,7 +63,7 @@
             const [initialRender, setInitialRender] = React.useState(true);
             const [activeTab, setActiveTab] = React.useState('Games');
             const [showBubble, setShowBubble] = React.useState(false);
-            const [showMinecraftOverlay, setShowMinecraftOverlay] = React.useState(false);
+            const [showAppOverlay, setShowAppOverlay] = React.useState(false);
             const [showLogo, setShowLogo] = React.useState(true);
 
             React.useEffect(() => {
@@ -73,8 +73,8 @@
 
                 const handleKeyDown = (event) => {
                     if (event.ctrlKey && event.key === 'Escape') {
-                        if (showMinecraftOverlay) {
-                            setShowMinecraftOverlay(false);
+                        if (showAppOverlay) {
+                            setShowAppOverlay(false);
                             setShowBubble(false);
                         } else {
                             closeMenus();
@@ -88,7 +88,7 @@
                     clearInterval(timer);
                     document.removeEventListener('keydown', handleKeyDown);
                 };
-            }, [showMinecraftOverlay]);
+            }, [showAppOverlay]);
 
             const closeMenus = () => {
                 setClosingMenu(true);
@@ -119,19 +119,16 @@
                 document.body.style.backgroundImage = randomBackground;
             };
 
-            const handleMinecraftClick = () => {
+            const handleAppClick = (appUrl) => {
                 setShowBubble(true);
                 setTimeout(() => {
-                    setShowMinecraftOverlay(true);
-                    setTimeout(() => {
-                        setShowLogo(false);
-                    }, 2000);
+                    window.location.href = appUrl;
                 }, 3000);
             };
 
             return (
                 <div className={`relative h-screen w-screen`} onClick={closeMenus}>
-                    {!showMinecraftOverlay && (
+                    {!showAppOverlay && (
                         <nav className="flex justify-between items-center p-4 bg-black bg-opacity-50">
                             <div className="flex items-center">
                                 <img src="https://placehold.co/40x40" alt="Quantum Vortex Network Logo" className="mr-2" />
@@ -162,7 +159,7 @@
                     <div className="absolute inset-0 flex justify-end items-start mt-20">
                         <div className="p-4 rounded-lg w-56 h-[calc(100%-5rem)] overflow-y-scroll mr-4">
                             <div className="flex flex-col space-y-2">
-                                <div className="bg-black p-2 rounded-lg" onMouseEnter={handleMouseEnter} onClick={handleMinecraftClick}>
+                                <div className="bg-black p-2 rounded-lg" onMouseEnter={handleMouseEnter} onClick={() => handleAppClick("games/minecraft/Minecraft version 2.html")}>
                                     <img src="images/icons/minecraft.jpeg" alt="Minecraft" className="rounded-lg mb-1 w-full h-full object-cover" />
                                 </div>
                                 {['App 2', 'App 3', 'App 4', 'App 5', 'App 6', 'App 7', 'App 8'].map((app, index) => (
@@ -171,6 +168,7 @@
                                         className="bg-black p-2 rounded-lg"
                                         onMouseEnter={() => setHoveredApp(app)}
                                         onMouseLeave={() => setHoveredApp('')}
+                                        onClick={() => handleAppClick(`app${index + 2}.html`)}
                                     >
                                         <img src={`https://placehold.co/160x160`} alt={app} className="rounded-lg mb-1 w-full h-full object-cover" />
                                     </div>
@@ -179,18 +177,18 @@
                         </div>
                     </div>
                     {hoveredApp && (
-                        <div className="absolute bottom-4 left-4 bg-black bg-opacity-70 p-2 rounded-lg">
-                            <span className="text-white">{hoveredApp}</span>
+                        <div className="absolute bottom-20 left-1/2 transform -translate-x-1/2 bg-black bg-opacity-70 p-2 rounded-lg">
+                            <span className="text-white text-6xl">{hoveredApp}</span>
                         </div>
                     )}
-                    {showBubble && !showMinecraftOverlay && (
+                    {showBubble && !showAppOverlay && (
                         <div className="fixed inset-0 flex items-center justify-center">
                             <div className="expand-bubble">
                                 <img src="images/icons/minecraft.jpeg" alt="Minecraft Bubble" className="rounded-full" />
                             </div>
                         </div>
                     )}
-                    {showMinecraftOverlay && (
+                    {showAppOverlay && (
                         <div className="fixed inset-0 bg-black flex flex-col items-center justify-center animate-fade-in">
                             <nav className="flex justify-between items-center p-4 bg-black bg-opacity-50 w-full">
                                 <div className="flex items-center">
