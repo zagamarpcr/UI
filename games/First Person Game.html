@@ -78,12 +78,12 @@
     world.addBody(characterBody);
 
     // Set up camera controls
-    let cameraControls = new THREE.OrbitControls(camera, canvas);
-    cameraControls.enableDamping = true;
-    cameraControls.dampingFactor = 0.05;
+    let cameraControls = new THREE.FirstPersonControls(camera, canvas);
+    cameraControls.movementSpeed = 5;
+    cameraControls.lookSpeed = 0.05;
 
     // Set up camera position and rotation
-    camera.position.z = 20; // Move camera back to see the scene
+    camera.position.z = 10; // Move camera back to see the scene
     camera.position.y = 10; // Move camera up to see the character
     camera.rotation.x = -Math.PI / 4; // Look down at an angle
 
@@ -95,6 +95,7 @@
       requestAnimationFrame(animate);
       world.step(1 / 60); // Update physics world
       character.position.copy(characterBody.position); // Update character position
+      cameraControls.update(); // Update camera controls
       renderer.render(scene, camera);
     }
     animate();
@@ -114,11 +115,6 @@
           characterBody.velocity.x = 5;
           break;
       }
-    });
-
-    // Update camera controls on mouse move
-    canvas.addEventListener("mousemove", (e) => {
-      cameraControls.update();
     });
   </script>
 </body>
