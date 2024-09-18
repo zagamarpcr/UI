@@ -76,6 +76,19 @@
     scene.add(sky);
     console.log("Skybox added to scene");
 
+    console.log("Scene objects:");
+    console.log("  Terrain:", terrain);
+    console.log("  Character:", character);
+    console.log("  Skybox:", sky);
+
+    console.log("Camera settings:");
+    console.log("  Position:", camera.position);
+    console.log("  Rotation:", camera.rotation);
+
+    console.log("Renderer settings:");
+    console.log("  Size:", renderer.getSize());
+    console.log("  Clear color:", renderer.getClearColor());
+
     function animate() {
       requestAnimationFrame(animate);
       renderer.render(scene, camera);
