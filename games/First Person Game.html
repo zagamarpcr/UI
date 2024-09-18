@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>First Person Game</title>
+  <title>3D Terrain with Camera Controls</title>
   <style>
     body {
       margin: 0;
@@ -41,53 +41,31 @@
     renderer.setSize(canvas.width, canvas.height); // Set renderer size
     renderer.setClearColor(0xffffff, 1); // Set clear color to white
 
-    console.log("Scene setup complete:");
-    console.log("  Camera position:", camera.position);
-    console.log("  Camera rotation:", camera.rotation);
-    console.log("  Renderer size:", renderer.getSize());
-
-    let terrainGeometry = new THREE.PlaneGeometry(100, 100);
+    // Create 3D terrain
+    let terrainGeometry = new THREE.PlaneGeometry(100, 100, 100, 100);
     let terrainMaterial = new THREE.MeshBasicMaterial({ color: 0xAAAAAA }); // Grey ground
     let terrain = new THREE.Mesh(terrainGeometry, terrainMaterial);
     scene.add(terrain);
-    console.log("Terrain added to scene");
 
-    let characterGeometry = new THREE.BoxGeometry(0.5, 0.5, 0.5);
-    let characterMaterial = new THREE.MeshBasicMaterial({ color: 0xff0000 });
-    let character = new THREE.Mesh(characterGeometry, characterMaterial);
-    scene.add(character);
-    console.log("Character added to scene");
+    // Create block
+    let blockGeometry = new THREE.BoxGeometry(1, 1, 1);
+    let blockMaterial = new THREE.MeshBasicMaterial({ color: 0xff0000 }); // Red block
+    let block = new THREE.Mesh(blockGeometry, blockMaterial);
+    block.position.z = -20; // Position block 20 units away
+    scene.add(block);
 
-    camera.position.z = -5; // Adjusted camera position
+    // Set up camera controls
+    let cameraControls = new THREE.OrbitControls(camera, canvas);
+    cameraControls.enableDamping = true;
+    cameraControls.dampingFactor = 0.05;
+
+    // Set up camera position and rotation
+    camera.position.z = -5;
     camera.rotation.x = -Math.PI / 2; // Look down
-    let x = 0;
-    let y = 0;
-    let speed = 0.1;
 
     // Add ambient light
     let ambientLight = new THREE.AmbientLight(0xffffff, 1);
     scene.add(ambientLight);
-
-    // Add skybox
-    let skyGeometry = new THREE.SphereGeometry(100, 60, 60);
-    let skyMaterial = new THREE.MeshBasicMaterial({ color: 0x87CEEB }); // Blue sky
-    let sky = new THREE.Mesh(skyGeometry, skyMaterial);
-    sky.scale.set(-1, 1, 1); // Flip the skybox
-    scene.add(sky);
-    console.log("Skybox added to scene");
-
-    console.log("Scene objects:");
-    console.log("  Terrain:", terrain);
-    console.log("  Character:", character);
-    console.log("  Skybox:", sky);
-
-    console.log("Camera settings:");
-    console.log("  Position:", camera.position);
-    console.log("  Rotation:", camera.rotation);
-
-    console.log("Renderer settings:");
-    console.log("  Size:", renderer.getSize());
-    console.log("  Clear color:", renderer.getClearColor());
 
     function animate() {
       requestAnimationFrame(animate);
@@ -98,22 +76,23 @@
     document.addEventListener("keydown", (e) => {
       switch (e.key) {
         case "w":
-          character.position.z -= speed;
-          camera.position.z -= speed;
+          camera.position.z -= 0.1;
           break;
         case "s":
-          character.position.z += speed;
-          camera.position.z += speed;
+          camera.position.z += 0.1;
           break;
         case "a":
-          character.position.x -= speed;
-          camera.position.x -= speed;
+          camera.position.x -= 0.1;
           break;
         case "d":
-          character.position.x += speed;
-          camera.position.x += speed;
+          camera.position.x += 0.1;
           break;
       }
+    });
+
+    // Update camera controls on mouse move
+    canvas.addEventListener("mousemove", (e) => {
+      cameraControls.update();
     });
   </script>
 </body>
