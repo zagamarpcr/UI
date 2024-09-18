@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>3D Terrain with Camera Controls</title>
+  <title>3D Terrain with Physics and Character</title>
   <style>
     body {
       margin: 0;
@@ -25,6 +25,7 @@
     <canvas id="canvas" width="640" height="480"></canvas>
   </div>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/cannon-es/0.19.0/cannon-es.js"></script>
   <script>
     let canvas = document.getElementById("canvas");
     let ctx = canvas.getContext("webgl");
@@ -41,18 +42,40 @@
     renderer.setSize(canvas.width, canvas.height); // Set renderer size
     renderer.setClearColor(0xffffff, 1); // Set clear color to white
 
+    // Create physics world
+    let world = new CANNON.World();
+    world.gravity.set(0, -9.82, 0);
+
     // Create 3D terrain
-    let terrainGeometry = new THREE.PlaneGeometry(100, 100, 100, 100);
+    let terrainGeometry = new THREE.BoxGeometry(100, 1, 100);
     let terrainMaterial = new THREE.MeshBasicMaterial({ color: 0xAAAAAA }); // Grey ground
     let terrain = new THREE.Mesh(terrainGeometry, terrainMaterial);
+    terrain.position.y = -0.5; // Position terrain at y = -0.5
     scene.add(terrain);
 
-    // Create block
-    let blockGeometry = new THREE.BoxGeometry(1, 1, 1);
-    let blockMaterial = new THREE.MeshBasicMaterial({ color: 0xff0000 }); // Red block
-    let block = new THREE.Mesh(blockGeometry, blockMaterial);
-    block.position.z = -20; // Position block 20 units away
-    scene.add(block);
+    // Create physics body for terrain
+    let terrainBody = new CANNON.Body({
+      type: CANNON.Body.STATIC,
+      shape: new CANNON.Box(new CANNON.Vec3(50, 0.5, 50)),
+      position: new CANNON.Vec3(0, -0.5, 0)
+    });
+    world.addBody(terrainBody);
+
+    // Create character
+    let characterGeometry = new THREE.SphereGeometry(1, 32, 32);
+    let characterMaterial = new THREE.MeshBasicMaterial({ color: 0xff0000 }); // Red character
+    let character = new THREE.Mesh(characterGeometry, characterMaterial);
+    character.position.y = 10; // Position character at y = 10
+    scene.add(character);
+
+    // Create physics body for character
+    let characterBody = new CANNON.Body({
+      type: CANNON.Body.DYNAMIC,
+      shape: new CANNON.Sphere(1),
+      position: new CANNON.Vec3(0, 10, 0),
+      mass: 1
+    });
+    world.addBody(characterBody);
 
     // Set up camera controls
     let cameraControls = new THREE.OrbitControls(camera, canvas);
@@ -69,6 +92,8 @@
 
     function animate() {
       requestAnimationFrame(animate);
+      world.step(1 / 60); // Update physics world
+      character.position.copy(characterBody.position); // Update character position
       renderer.render(scene, camera);
     }
     animate();
@@ -76,16 +101,16 @@
     document.addEventListener("keydown", (e) => {
       switch (e.key) {
         case "w":
-          camera.position.z -= 0.1;
+          characterBody.velocity.z = -5;
           break;
         case "s":
-          camera.position.z += 0.1;
+          characterBody.velocity.z = 5;
           break;
         case "a":
-          camera.position.x -= 0.1;
+          characterBody.velocity.x = -5;
           break;
         case "d":
-          camera.position.x += 0.1;
+          characterBody.velocity.x = 5;
           break;
       }
     });
