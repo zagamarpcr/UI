@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>First Person Game</title>
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+    }
+    #game-container {
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    #canvas {
+      border: 1px solid red;
+    }
+  </style>
+</head>
+<body>
+  <div id="game-container">
+    <canvas id="canvas" width="640" height="480"></canvas>
+  </div>
+  <script>
+    let canvas = document.getElementById("canvas");
+    let ctx = canvas.getContext("webgl");
+    let scene = new THREE.Scene();
+    let camera = new THREE.PerspectiveCamera(75, canvas.width / canvas.height, 0.1, 1000);
+    let renderer = new THREE.WebGLRenderer({
+      canvas: canvas,
+      antialias: true
+    });
+    renderer.setSize(canvas.width, canvas.height); // Set renderer size
+    let terrainGeometry = new THREE.PlaneGeometry(100, 100);
+    let terrainMaterial = new THREE.MeshBasicMaterial({ color: 0xAAAAAA }); // Grey ground
+    let terrain = new THREE.Mesh(terrainGeometry, terrainMaterial);
+    scene.add(terrain);
+    let characterGeometry = new THREE.BoxGeometry(0.5, 0.5, 0.5);
+    let characterMaterial = new THREE.MeshBasicMaterial({ color: 0xff0000 });
+    let character = new THREE.Mesh(characterGeometry, characterMaterial);
+    scene.add(character);
+    camera.position.z = -5; // Adjusted camera position
+    camera.rotation.x = -Math.PI / 2; // Look down
+    let x = 0;
+    let y = 0;
+    let speed = 0.1;
+
+    // Add ambient light
+    let ambientLight = new THREE.AmbientLight(0xffffff, 1);
+    scene.add(ambientLight);
+
+    // Add skybox
+    let skyGeometry = new THREE.SphereGeometry(100, 60, 60);
+    let skyMaterial = new THREE.MeshBasicMaterial({ color: 0x87CEEB }); // Blue sky
+    let sky = new THREE.Mesh(skyGeometry, skyMaterial);
+    sky.scale.set(-1, 1, 1); // Flip the skybox
+    scene.add(sky);
+
+    function animate() {
+      requestAnimationFrame(animate);
+      renderer.render(scene, camera);
+    }
+    animate();
+
+    document.addEventListener("keydown", (e) => {
+      switch (e.key) {
+        case "w":
+          character.position.z -= speed;
+          camera.position.z -= speed;
+          break;
+        case "s":
+          character.position.z += speed;
+          camera.position.z += speed;
+          break;
+        case "a":
+          character.position.x -= speed;
+          camera.position.x -= speed;
+          break;
+        case "d":
+          character.position.x += speed;
+          camera.position.x += speed;
+          break;
+      }
+    });
+  </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+</body>
+</html>
