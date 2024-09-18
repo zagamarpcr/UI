@@ -83,8 +83,9 @@
     cameraControls.dampingFactor = 0.05;
 
     // Set up camera position and rotation
-    camera.position.z = -5;
-    camera.rotation.x = -Math.PI / 2; // Look down
+    camera.position.z = 20; // Move camera back to see the scene
+    camera.position.y = 10; // Move camera up to see the character
+    camera.rotation.x = -Math.PI / 4; // Look down at an angle
 
     // Add ambient light
     let ambientLight = new THREE.AmbientLight(0xffffff, 1);
