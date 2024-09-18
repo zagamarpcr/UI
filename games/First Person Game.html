@@ -26,6 +26,7 @@
   </div>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/cannon-es/0.19.0/cannon-es.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/FirstPersonControls.js"></script>
   <script>
     let canvas = document.getElementById("canvas");
     let ctx = canvas.getContext("webgl");
@@ -42,80 +43,101 @@
     renderer.setSize(canvas.width, canvas.height); // Set renderer size
     renderer.setClearColor(0xffffff, 1); // Set clear color to white
 
-    // Create physics world
-    let world = new CANNON.World();
-    world.gravity.set(0, -9.82, 0);
+    console.log("Scene and camera setup complete");
 
-    // Create 3D terrain
-    let terrainGeometry = new THREE.BoxGeometry(100, 1, 100);
-    let terrainMaterial = new THREE.MeshBasicMaterial({ color: 0xAAAAAA }); // Grey ground
-    let terrain = new THREE.Mesh(terrainGeometry, terrainMaterial);
-    terrain.position.y = -0.5; // Position terrain at y = -0.5
-    scene.add(terrain);
+    // Check if Cannon.js is loaded correctly
+    if (typeof CANNON === 'undefined') {
+      console.error("Cannon.js library not loaded correctly");
+      alert("Cannon.js library not loaded correctly. Please check the script tag.");
+    } else {
+      // Create physics world
+      let world = new CANNON.World();
+      world.gravity.set(0, -9.82, 0);
 
-    // Create physics body for terrain
-    let terrainBody = new CANNON.Body({
-      type: CANNON.Body.STATIC,
-      shape: new CANNON.Box(new CANNON.Vec3(50, 0.5, 50)),
-      position: new CANNON.Vec3(0, -0.5, 0)
-    });
-    world.addBody(terrainBody);
+      console.log("Physics world created");
 
-    // Create character
-    let characterGeometry = new THREE.SphereGeometry(1, 32, 32);
-    let characterMaterial = new THREE.MeshBasicMaterial({ color: 0xff0000 }); // Red character
-    let character = new THREE.Mesh(characterGeometry, characterMaterial);
-    character.position.y = 10; // Position character at y = 10
-    scene.add(character);
+      // Create 3D terrain
+      let terrainGeometry = new THREE.BoxGeometry(100, 1, 100);
+      let terrainMaterial = new THREE.MeshBasicMaterial({ color: 0xAAAAAA }); // Grey ground
+      let terrain = new THREE.Mesh(terrainGeometry, terrainMaterial);
+      terrain.position.y = -0.5; // Position terrain at y = -0.5
+      scene.add(terrain);
 
-    // Create physics body for character
-    let characterBody = new CANNON.Body({
-      type: CANNON.Body.DYNAMIC,
-      shape: new CANNON.Sphere(1),
-      position: new CANNON.Vec3(0, 10, 0),
-      mass: 1
-    });
-    world.addBody(characterBody);
+      console.log("Terrain created and added to scene");
 
-    // Set up camera controls
-    let cameraControls = new THREE.FirstPersonControls(camera, canvas);
-    cameraControls.movementSpeed = 5;
-    cameraControls.lookSpeed = 0.05;
+      // Create physics body for terrain
+      let terrainBody = new CANNON.Body({
+        type: CANNON.Body.STATIC,
+        shape: new CANNON.Box(new CANNON.Vec3(50, 0.5, 50)),
+        position: new CANNON.Vec3(0, -0.5, 0)
+      });
+      world.addBody(terrainBody);
 
-    // Set up camera position and rotation
-    camera.position.z = 10; // Move camera back to see the scene
-    camera.position.y = 10; // Move camera up to see the character
-    camera.rotation.x = -Math.PI / 4; // Look down at an angle
+      console.log("Physics body for terrain created and added to world");
 
-    // Add ambient light
-    let ambientLight = new THREE.AmbientLight(0xffffff, 1);
-    scene.add(ambientLight);
+      // Create character
+      let characterGeometry = new THREE.SphereGeometry(1, 32, 32);
+      let characterMaterial = new THREE.MeshBasicMaterial({ color: 0xff0000 }); // Red character
+      let character = new THREE.Mesh(characterGeometry, characterMaterial);
+      character.position.y = 10; // Position character at y = 10
+      scene.add(character);
 
-    function animate() {
-      requestAnimationFrame(animate);
-      world.step(1 / 60); // Update physics world
-      character.position.copy(characterBody.position); // Update character position
-      cameraControls.update(); // Update camera controls
-      renderer.render(scene, camera);
-    }
-    animate();
+      console.log("Character created and added to scene");
 
-    document.addEventListener("keydown", (e) => {
-      switch (e.key) {
-        case "w":
-          characterBody.velocity.z = -5;
-          break;
-        case "s":
-          characterBody.velocity.z = 5;
-          break;
-        case "a":
-          characterBody.velocity.x = -5;
-          break;
-        case "d":
-          characterBody.velocity.x = 5;
-          break;
+      // Create physics body for character
+      let characterBody = new CANNON.Body({
+        type: CANNON.Body.DYNAMIC,
+        shape: new CANNON.Sphere(1),
+        position: new CANNON.Vec3(0, 10, 0),
+        mass: 1
+      });
+      world.addBody(characterBody);
+
+      console.log("Physics body for character created and added to world");
+
+      // Set up camera controls
+      let cameraControls = new THREE.FirstPersonControls(camera, canvas);
+      cameraControls.movementSpeed = 5;
+      cameraControls.lookSpeed = 0.05;
+
+      console.log("Camera controls setup complete");
+
+      // Set up camera position and rotation
+      camera.position.z = 10; // Move camera back to see the scene
+      camera.position.y = 10; // Move camera up to see the character
+      camera.rotation.x = -Math.PI / 4; // Look down at an angle
+
+      console.log("Camera position and rotation setup complete");
+
+      function animate() {
+        console.log("Animating...");
+        requestAnimationFrame(animate);
+        world.step(1 / 60); // Update physics world
+        character.position.copy(characterBody.position); // Update character position
+        cameraControls.update(1 / 60); // Update camera controls
+        renderer.render(scene, camera);
       }
-    });
+      animate();
+
+      console.log("Animation started");
+
+      document.addEventListener("keydown", (e) => {
+        switch (e.key) {
+          case "w":
+            characterBody.velocity.z = -5;
+            break;
+          case "s":
+            characterBody.velocity.z = 5;
+            break;
+          case "a":
+            characterBody.velocity.x = -5;
+            break;
+          case "d":
+            characterBody.velocity.x = 5;
+            break;
+        }
+      });
+    }
   </script>
 </body>
 </html>
