@@ -24,11 +24,13 @@
   <div id="game-container">
     <canvas id="canvas" width="640" height="480"></canvas>
   </div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <script>
     let canvas = document.getElementById("canvas");
     let ctx = canvas.getContext("webgl");
     if (!ctx) {
       console.error("Failed to create WebGL context");
+      alert("Your browser does not support WebGL. Please try a different browser.");
     }
     let scene = new THREE.Scene();
     let camera = new THREE.PerspectiveCamera(75, canvas.width / canvas.height, 0.1, 1000);
@@ -93,6 +95,5 @@
       }
     });
   </script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 </body>
 </html>
