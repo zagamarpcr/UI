@@ -31,7 +31,7 @@
       antialias: true
     });
     let terrainGeometry = new THREE.PlaneGeometry(100, 100);
-    let terrainMaterial = new THREE.MeshBasicMaterial({ color: 0xcccccc });
+    let terrainMaterial = new THREE.MeshBasicMaterial({ color: 0xAAAAAA }); // Grey ground
     let terrain = new THREE.Mesh(terrainGeometry, terrainMaterial);
     scene.add(terrain);
     let blockGeometry = new THREE.BoxGeometry(1, 1, 1);
@@ -47,6 +47,13 @@
     let x = 0;
     let y = 0;
     let speed = 0.1;
+
+    // Add skybox
+    let skyGeometry = new THREE.SphereGeometry(100, 60, 60);
+    let skyMaterial = new THREE.MeshBasicMaterial({ color: 0x87CEEB }); // Blue sky
+    let sky = new THREE.Mesh(skyGeometry, skyMaterial);
+    sky.scale.set(-1, 1, 1); // Flip the skybox
+    scene.add(sky);
 
     function animate() {
       requestAnimationFrame(animate);
