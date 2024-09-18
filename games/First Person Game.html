@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>First Person Game</title>
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+    }
+    #game-container {
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    #terrain {
+      width: 100%;
+      height: 100%;
+      background-color: #ccc;
+    }
+    #block {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 50px;
+      height: 50px;
+      background-color: #666;
+    }
+    #character {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 20px;
+      height: 20px;
+      background-color: #f00;
+    }
+  </style>
+</head>
+<body>
+  <div id="game-container">
+    <div id="terrain"></div>
+    <div id="block"></div>
+    <div id="character"></div>
+  </div>
+  <script>
+    let character = document.getElementById("character");
+    let block = document.getElementById("block");
+    let terrain = document.getElementById("terrain");
+    let x = 0;
+    let y = 0;
+    let speed = 5;
+
+    document.addEventListener("keydown", (e) => {
+      switch (e.key) {
+        case "w":
+          y -= speed;
+          break;
+        case "s":
+          y += speed;
+          break;
+        case "a":
+          x -= speed;
+          break;
+        case "d":
+          x += speed;
+          break;
+      }
+      character.style.transform = `translate(${x}px, ${y}px)`;
+    });
+  </script>
+</body>
+</html>

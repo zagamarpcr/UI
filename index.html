@@ -65,6 +65,7 @@
             const [showBubble, setShowBubble] = React.useState(false);
             const [showAppOverlay, setShowAppOverlay] = React.useState(false);
             const [showLogo, setShowLogo] = React.useState(true);
+            const [appUrl, setAppUrl] = React.useState('');
 
             React.useEffect(() => {
                 const timer = setInterval(() => {
@@ -119,8 +120,9 @@
                 document.body.style.backgroundImage = randomBackground;
             };
 
-            const handleAppClick = () => {
+            const handleAppClick = (url) => {
                 setShowBubble(true);
+                setAppUrl(url);
                 setTimeout(() => {
                     setShowAppOverlay(true);
                     setTimeout(() => {
@@ -162,10 +164,13 @@
                     <div className="absolute inset-0 flex justify-end items-start mt-20">
                         <div className="p-4 rounded-lg w-56 h-[calc(100%-5rem)] overflow-y-scroll mr-4">
                             <div className="flex flex-col space-y-2">
-                                <div className="bg-black p-2 rounded-lg" onMouseEnter={handleMouseEnter} onClick={handleAppClick}>
+                                <div className="bg-black p-2 rounded-lg" onMouseEnter={handleMouseEnter} onClick={() => handleAppClick("games/minecraft/Minecraft version 2.html")}>
                                     <img src="images/icons/minecraft.jpeg" alt="Minecraft" className="rounded-lg mb-1 w-full h-full object-cover" />
                                 </div>
-                                {['App 2', 'App 3', 'App 4', 'App 5', 'App 6', 'App 7', 'App 8'].map((app, index) => (
+                                <div className="bg-black p-2 rounded-lg" onMouseEnter={() => setHoveredApp('App 2')} onMouseLeave={() => setHoveredApp('')} onClick={() => handleAppClick("games/First Person Game.html")}>
+                                    <img src="https://placehold.co/160x160" alt="App 2" className="rounded-lg mb-1 w-full h-full object-cover" />
+                                </div>
+                                {['App 3', 'App 4', 'App 5', 'App 6', 'App 7', 'App 8'].map((app, index) => (
                                     <div
                                         key={index}
                                         className="bg-black p-2 rounded-lg"
@@ -192,7 +197,7 @@
                     )}
                     {showAppOverlay && (
                         <div className="fixed inset-0 bg-black flex flex-col items-center justify-center animate-fade-in">
-                            <iframe src="games/minecraft/Minecraft version 2.html" className="w-full h-full"></iframe>
+                            <iframe src={appUrl} className="w-full h-full"></iframe>
                             <div className="fixed bottom-4 right-4 bg-gray-800 text-white p-2 rounded-lg">
                                 <span>Click Ctrl+Esc to close game</span>
                             </div>
