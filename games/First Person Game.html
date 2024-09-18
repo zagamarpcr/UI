@@ -40,16 +40,24 @@
     });
     renderer.setSize(canvas.width, canvas.height); // Set renderer size
     renderer.setClearColor(0xffffff, 1); // Set clear color to white
+
+    console.log("Scene setup complete:");
+    console.log("  Camera position:", camera.position);
+    console.log("  Camera rotation:", camera.rotation);
+    console.log("  Renderer size:", renderer.getSize());
+
     let terrainGeometry = new THREE.PlaneGeometry(100, 100);
     let terrainMaterial = new THREE.MeshBasicMaterial({ color: 0xAAAAAA }); // Grey ground
     let terrain = new THREE.Mesh(terrainGeometry, terrainMaterial);
     scene.add(terrain);
     console.log("Terrain added to scene");
+
     let characterGeometry = new THREE.BoxGeometry(0.5, 0.5, 0.5);
     let characterMaterial = new THREE.MeshBasicMaterial({ color: 0xff0000 });
     let character = new THREE.Mesh(characterGeometry, characterMaterial);
     scene.add(character);
     console.log("Character added to scene");
+
     camera.position.z = -5; // Adjusted camera position
     camera.rotation.x = -Math.PI / 2; // Look down
     let x = 0;
