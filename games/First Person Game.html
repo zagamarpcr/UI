@@ -15,62 +15,66 @@
       justify-content: center;
       align-items: center;
     }
-    #terrain {
-      width: 100%;
-      height: 100%;
-      background-color: #ccc;
-    }
-    #block {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      width: 50px;
-      height: 50px;
-      background-color: #666;
-    }
-    #character {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      width: 20px;
-      height: 20px;
-      background-color: #f00;
-    }
   </style>
 </head>
 <body>
   <div id="game-container">
-    <div id="terrain"></div>
-    <div id="block"></div>
-    <div id="character"></div>
+    <canvas id="canvas" width="640" height="480"></canvas>
   </div>
   <script>
-    let character = document.getElementById("character");
-    let block = document.getElementById("block");
-    let terrain = document.getElementById("terrain");
+    let canvas = document.getElementById("canvas");
+    let ctx = canvas.getContext("webgl");
+    let scene = new THREE.Scene();
+    let camera = new THREE.PerspectiveCamera(75, canvas.width / canvas.height, 0.1, 1000);
+    let renderer = new THREE.WebGLRenderer({
+      canvas: canvas,
+      antialias: true
+    });
+    let terrainGeometry = new THREE.PlaneGeometry(100, 100);
+    let terrainMaterial = new THREE.MeshBasicMaterial({ color: 0xcccccc });
+    let terrain = new THREE.Mesh(terrainGeometry, terrainMaterial);
+    scene.add(terrain);
+    let blockGeometry = new THREE.BoxGeometry(1, 1, 1);
+    let blockMaterial = new THREE.MeshBasicMaterial({ color: 0x666666 });
+    let block = new THREE.Mesh(blockGeometry, blockMaterial);
+    block.position.z = -5;
+    scene.add(block);
+    let characterGeometry = new THREE.BoxGeometry(0.5, 0.5, 0.5);
+    let characterMaterial = new THREE.MeshBasicMaterial({ color: 0xff0000 });
+    let character = new THREE.Mesh(characterGeometry, characterMaterial);
+    scene.add(character);
+    camera.position.z = 5;
     let x = 0;
     let y = 0;
-    let speed = 5;
+    let speed = 0.1;
+
+    function animate() {
+      requestAnimationFrame(animate);
+      renderer.render(scene, camera);
+    }
+    animate();
 
     document.addEventListener("keydown", (e) => {
       switch (e.key) {
         case "w":
-          y -= speed;
+          character.position.z -= speed;
+          camera.position.z -= speed;
           break;
         case "s":
-          y += speed;
+          character.position.z += speed;
+          camera.position.z += speed;
           break;
         case "a":
-          x -= speed;
+          character.position.x -= speed;
+          camera.position.x -= speed;
           break;
         case "d":
-          x += speed;
+          character.position.x += speed;
+          camera.position.x += speed;
           break;
       }
-      character.style.transform = `translate(${x}px, ${y}px)`;
     });
   </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 </body>
 </html>
