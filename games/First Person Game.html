@@ -27,6 +27,9 @@
   <script>
     let canvas = document.getElementById("canvas");
     let ctx = canvas.getContext("webgl");
+    if (!ctx) {
+      console.error("Failed to create WebGL context");
+    }
     let scene = new THREE.Scene();
     let camera = new THREE.PerspectiveCamera(75, canvas.width / canvas.height, 0.1, 1000);
     let renderer = new THREE.WebGLRenderer({
@@ -34,14 +37,17 @@
       antialias: true
     });
     renderer.setSize(canvas.width, canvas.height); // Set renderer size
+    renderer.setClearColor(0xffffff, 1); // Set clear color to white
     let terrainGeometry = new THREE.PlaneGeometry(100, 100);
     let terrainMaterial = new THREE.MeshBasicMaterial({ color: 0xAAAAAA }); // Grey ground
     let terrain = new THREE.Mesh(terrainGeometry, terrainMaterial);
     scene.add(terrain);
+    console.log("Terrain added to scene");
     let characterGeometry = new THREE.BoxGeometry(0.5, 0.5, 0.5);
     let characterMaterial = new THREE.MeshBasicMaterial({ color: 0xff0000 });
     let character = new THREE.Mesh(characterGeometry, characterMaterial);
     scene.add(character);
+    console.log("Character added to scene");
     camera.position.z = -5; // Adjusted camera position
     camera.rotation.x = -Math.PI / 2; // Look down
     let x = 0;
@@ -58,6 +64,7 @@
     let sky = new THREE.Mesh(skyGeometry, skyMaterial);
     sky.scale.set(-1, 1, 1); // Flip the skybox
     scene.add(sky);
+    console.log("Skybox added to scene");
 
     function animate() {
       requestAnimationFrame(animate);
