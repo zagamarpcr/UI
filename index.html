@@ -197,7 +197,7 @@
                     )}
                     {showAppOverlay && (
                         <div className="fixed inset-0 bg-black flex flex-col items-center justify-center animate-fade-in">
-                            <div className="game-container">
+                            <div className="game-container" style={{ position: 'absolute', top: 0, left: 0 }}>
                                 <canvas id="game-canvas" width="800" height="600"></canvas>
                             </div>
                             <iframe src={appUrl} className="w-full h-full"></iframe>
