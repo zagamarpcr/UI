@@ -32,7 +32,6 @@
     let ctx = canvas.getContext("webgl");
     if (!ctx) {
       console.error("Failed to create WebGL context");
-      alert("Your browser does not support WebGL. Please try a different browser.");
     }
     let scene = new THREE.Scene();
     let camera = new THREE.PerspectiveCamera(75, canvas.width / canvas.height, 0.1, 1000);
@@ -45,99 +44,111 @@
 
     console.log("Scene and camera setup complete");
 
-    // Check if Cannon.js is loaded correctly
-    if (typeof CANNON === 'undefined') {
-      console.error("Cannon.js library not loaded correctly");
-      alert("Cannon.js library not loaded correctly. Please check the script tag.");
-    } else {
-      // Create physics world
-      let world = new CANNON.World();
-      world.gravity.set(0, -9.82, 0);
+    // Create physics world
+    let world = new CANNON.World();
+    world.gravity.set(0, -9.82, 0);
 
-      console.log("Physics world created");
+    console.log("Physics world created");
 
-      // Create 3D terrain
-      let terrainGeometry = new THREE.BoxGeometry(100, 1, 100);
-      let terrainMaterial = new THREE.MeshBasicMaterial({ color: 0xAAAAAA }); // Grey ground
-      let terrain = new THREE.Mesh(terrainGeometry, terrainMaterial);
-      terrain.position.y = -0.5; // Position terrain at y = -0.5
-      scene.add(terrain);
+    // Create 3D terrain
+    let terrainGeometry = new THREE.BoxGeometry(100, 1, 100);
+    let terrainMaterial = new THREE.MeshBasicMaterial({ color: 0xAAAAAA }); // Grey ground
+    let terrain = new THREE.Mesh(terrainGeometry, terrainMaterial);
+    terrain.position.y = -0.5; // Position terrain at y = -0.5
+    scene.add(terrain);
 
-      console.log("Terrain created and added to scene");
+    console.log("Terrain created and added to scene");
 
-      // Create physics body for terrain
-      let terrainBody = new CANNON.Body({
-        type: CANNON.Body.STATIC,
-        shape: new CANNON.Box(new CANNON.Vec3(50, 0.5, 50)),
-        position: new CANNON.Vec3(0, -0.5, 0)
-      });
-      world.addBody(terrainBody);
+    // Create physics body for terrain
+    let terrainBody = new CANNON.Body({
+      type: CANNON.Body.STATIC,
+      shape: new CANNON.Box(new CANNON.Vec3(50, 0.5, 50)),
+      position: new CANNON.Vec3(0, -0.5, 0)
+    });
+    world.addBody(terrainBody);
 
-      console.log("Physics body for terrain created and added to world");
+    console.log("Physics body for terrain created and added to world");
 
-      // Create character
-      let characterGeometry = new THREE.SphereGeometry(1, 32, 32);
-      let characterMaterial = new THREE.MeshBasicMaterial({ color: 0xff0000 }); // Red character
-      let character = new THREE.Mesh(characterGeometry, characterMaterial);
-      character.position.y = 10; // Position character at y = 10
-      scene.add(character);
+    // Create character
+    let characterGeometry = new THREE.SphereGeometry(1, 32, 32);
+    let characterMaterial = new THREE.MeshBasicMaterial({ color: 0xff0000 }); // Red character
+    let character = new THREE.Mesh(characterGeometry, characterMaterial);
+    character.position.y = 10; // Position character at y = 10
+    scene.add(character);
 
-      console.log("Character created and added to scene");
+    console.log("Character created and added to scene");
 
-      // Create physics body for character
-      let characterBody = new CANNON.Body({
-        type: CANNON.Body.DYNAMIC,
-        shape: new CANNON.Sphere(1),
-        position: new CANNON.Vec3(0, 10, 0),
-        mass: 1
-      });
-      world.addBody(characterBody);
+    // Create physics body for character
+    let characterBody = new CANNON.Body({
+      type: CANNON.Body.DYNAMIC,
+      shape: new CANNON.Sphere(1),
+      position: new CANNON.Vec3(0, 10, 0),
+      mass: 1
+    });
+    world.addBody(characterBody);
 
-      console.log("Physics body for character created and added to world");
+    console.log("Physics body for character created and added to world");
 
-      // Set up camera controls
-      let cameraControls = new THREE.FirstPersonControls(camera, canvas);
-      cameraControls.movementSpeed = 5;
-      cameraControls.lookSpeed = 0.05;
+    // Set up camera controls
+    let cameraControls = new THREE.FirstPersonControls(camera, canvas);
+    cameraControls.movementSpeed = 5;
+    cameraControls.lookSpeed = 0.05;
 
-      console.log("Camera controls setup complete");
+    console.log("Camera controls setup complete");
 
-      // Set up camera position and rotation
-      camera.position.z = 10; // Move camera back to see the scene
-      camera.position.y = 10; // Move camera up to see the character
-      camera.rotation.x = -Math.PI / 4; // Look down at an angle
+    // Set up camera position and rotation
+    camera.position.z = 10; // Move camera back to see the scene
+    camera.position.y = 10; // Move camera up to see the character
+    camera.rotation.x = -Math.PI / 4; // Look down at an angle
 
-      console.log("Camera position and rotation setup complete");
+    console.log("Camera position and rotation setup complete");
 
-      function animate() {
-        console.log("Animating...");
-        requestAnimationFrame(animate);
-        world.step(1 / 60); // Update physics world
-        character.position.copy(characterBody.position); // Update character position
-        cameraControls.update(1 / 60); // Update camera controls
-        renderer.render(scene, camera);
-      }
-      animate();
+    // Add some basic lighting to the scene
+    let ambientLight = new THREE.AmbientLight(0x444444);
+    scene.add(ambientLight);
 
-      console.log("Animation started");
+    let directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+    directionalLight.position.set(0, 0, 1);
+    scene.add(directionalLight);
 
-      document.addEventListener("keydown", (e) => {
-        switch (e.key) {
-          case "w":
-            characterBody.velocity.z = -5;
-            break;
-          case "s":
-            characterBody.velocity.z = 5;
-            break;
-          case "a":
-            characterBody.velocity.x = -5;
-            break;
-          case "d":
-            characterBody.velocity.x = 5;
-            break;
-        }
-      });
+    console.log("Lighting added to scene");
+
+    function animate() {
+      console.log("Animating...");
+      requestAnimationFrame(animate);
+      world.step(1 / 60); // Update physics world
+      character.position.copy(characterBody.position); // Update character position
+      cameraControls.update(1 / 60); // Update camera controls
+      renderer.render(scene, camera);
     }
+    animate();
+
+    console.log("Animation started");
+
+    let mouseMoveHandler = (e) => {
+      let x = e.clientX;
+      let y = e.clientY;
+      cameraControls.lookAt(new THREE.Vector3(x, y, 0));
+    };
+    document.addEventListener("mousemove", mouseMoveHandler);
+
+    document.addEventListener("keydown", (e) => {
+      let velocity = 5;
+      switch (e.key) {
+        case "w":
+          characterBody.velocity.z = -velocity;
+          break;
+        case "s":
+          characterBody.velocity.z = velocity;
+          break;
+        case "a":
+          characterBody.velocity.x = -velocity;
+          break;
+        case "d":
+          characterBody.velocity.x = velocity;
+          break;
+      }
+    });
   </script>
 </body>
 </html>
