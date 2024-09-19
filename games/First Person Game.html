@@ -51,7 +51,7 @@
     console.log("Physics world created");
 
     // Create 3D terrain
-    let terrainGeometry = new THREE.BoxGeometry(100, 1, 100);
+    let terrainGeometry = new THREE.PlaneGeometry(100, 100, 10, 10); // Create a plane with 10x10 segments
     let terrainMaterial = new THREE.MeshBasicMaterial({ color: 0xAAAAAA }); // Grey ground
     let terrain = new THREE.Mesh(terrainGeometry, terrainMaterial);
     terrain.position.y = -0.5; // Position terrain at y = -0.5
@@ -62,7 +62,7 @@
     // Create physics body for terrain
     let terrainBody = new CANNON.Body({
       type: CANNON.Body.STATIC,
-      shape: new CANNON.Box(new CANNON.Vec3(50, 0.5, 50)),
+      shape: new CANNON.Plane(),
       position: new CANNON.Vec3(0, -0.5, 0)
     });
     world.addBody(terrainBody);
@@ -114,6 +114,11 @@
       characterCamera.position.copy(character.position); // Update character camera position
       characterCamera.rotation.copy(character.rotation); // Update character camera rotation
       renderer.render(scene, characterCamera);
+
+      // Update character position based on velocity
+      character.position.x += characterBody.velocity.x;
+      character.position.y += characterBody.velocity.y;
+      character.position.z += characterBody.velocity.z;
     }
     animate();
 
@@ -124,6 +129,8 @@
       let y = e.clientY;
       characterCamera.rotation.x = y / canvas.height * Math.PI;
       characterCamera.rotation.y = x / canvas.width * Math.PI;
+      characterCamera.position.x = x / canvas.width * 10 - 5; // Update camera position x
+      characterCamera.position.y = y / canvas.height * 10 - 5; // Update camera position y
     };
     document.addEventListener("mousemove", mouseMoveHandler);
 
