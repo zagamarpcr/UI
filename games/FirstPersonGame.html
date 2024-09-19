@@ -1,136 +1,191 @@
 <!DOCTYPE html>
 <html>
-<head><title>Simple Game</title></head>
-
-<style>
-#score{
-background-color: white;
-height:50px;
-width:140px;
-top:10px;
-left:540px;
-font-size:30px;
-}
-#board{
-position:absolute;
-width:5000px;
-height:300px;
-}
-#background{
-position:absolute;
-width:700px;
-height:500px;
-}
-#ball{
-position:absolute;
-width:70px;
-height:70px;
-top: 410px;
-left: 300px;
-}
-#goalie{
-position:absolute;
-width:100px;
-top:200px;
-left:300px;
-}
-#rules{
-position:absolute;
-top:0px;
-left:730px;
-}
-</style>
-
+<head>
+  <meta charset="UTF-8">
+  <title>3D Terrain with Physics and Character</title>
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+    }
+    #game-container {
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    #canvas {
+      border: 1px solid red;
+    }
+  </style>
+</head>
 <body>
-<div id="board">
-<img id="background" src="img/background.jpg" />
-<img id="ball" src="img/ball.jpg"/>
-<img id="goalie" src="img/goalie.jpg"/>
-<div id="score" style="position:absolute;" >Score</div>
-</div>
-<div id="rules" style="position:absolute;" >
+  <div id="game-container">
+    <canvas id="canvas"></canvas>
+  </div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/cannon.js/0.6.2/cannon.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/FirstPersonControls.js"></script>
+  <script>
+    let canvas = document.getElementById("canvas");
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    let ctx = canvas.getContext("webgl");
+    if (!ctx) {
+      console.error("Failed to create WebGL context");
+    }
+    let scene = new THREE.Scene();
+    let characterCamera = new THREE.PerspectiveCamera(75, canvas.width / canvas.height, 0.1, 1000);
+    characterCamera.rotation.set(0, 0, 0, 1); // Look straight ahead
+    let renderer = new THREE.WebGLRenderer({
+      canvas: canvas,
+      antialias: true
+    });
+    renderer.setSize(canvas.width, canvas.height); // Set renderer size
+    renderer.setClearColor(0x87CEEB, 1); // Set clear color to sky blue
 
-<h1>Simple Shooter Game</h1>
+    console.log("Scene and camera setup complete");
 
-<p>On building this simple game I learnt more about how the programming languages HTML5, CSS and JavaScript worked. The rules are stated below<p>
+    // Create physics world
+    let world = new CANNON.World();
+    world.gravity.set(0, -9.82, 0);
 
-<ul>
-<li>jkdsgjs</li>
-<li>hfdja</li>
-<li>`jeatngdadv</li>
-</ul>
+    console.log("Physics world created");
 
-<p>Have fun!!</p>
+    // Create 3D terrain
+    let terrainGeometry = new THREE.PlaneGeometry(100, 100, 10, 10); // Create a plane with 10x10 segments
+    let terrainMaterial = new THREE.MeshBasicMaterial({ color: 0x32CD32 }); // Green ground
+    let terrain = new THREE.Mesh(terrainGeometry, terrainMaterial);
+    terrain.scale.set(10, 1, 10); // Scale the terrain to create a larger environment
+    terrain.position.y = -0.5; // Position terrain at y = -0.5
+    scene.add(terrain);
 
+    console.log("Terrain created and added to scene");
 
-<button onclick="shootLeft()" style="top:400px; left:100px;" type="leftButton">Shoot left</button>
-<button onclick="shootRight()" style="top:400px; left:200px;" type="rightButton">Shoot right</button>
+    // Create physics body for terrain
+    let terrainBody = new CANNON.Body({
+      type: CANNON.Body.STATIC,
+      shape: new CANNON.Plane(),
+      position: new CANNON.Vec3(0, -0.5, 0)
+    });
+    world.addBody(terrainBody);
 
-<div>
-<p id="gameover"></p>
-</div>
-</div>
+    console.log("Physics body for terrain created and added to world");
 
-<script>
-var ball = null;
-var x = 1;
-var score = 0;
-document.getElementById('score').innerHTML = '0';
-var animate;
-ball = document.getElementById('ball');
+    // Create character
+    let characterGeometry = new THREE.SphereGeometry(1, 32, 32);
+    let characterMaterial = new THREE.MeshBasicMaterial({ color: 0xff0000 }); // Red character
+    let character = new THREE.Mesh(characterGeometry, characterMaterial);
+    character.position.y = 10; // Position character at y = 10
+    scene.add(character);
 
-function shootLeft(){
-var ran = Math.random();
+    console.log("Character created and added to scene");
 
-while(parseInt(ball.style.top) != 300){
-ball.style.left = parseInt(ball.style.left) - 1 + 'px';
-ball.style.top = parseInt(ball.style.top) - 1 + 'px';
-animate = setTimeout(shootLeft,20);
-}
-if(ran<0.3){
-score = score + 1;
-document.getElementById('score').innerHTML = score;
-}
-else{
-document.getElementById('score').innerHTML = score;
-}
-x++;
-if(x==10){
-document.getElementById('gameover').innerHTML = "Game over! You got a score of " + score;
-}
-ball.style.left = '300px';
-ball.style.top = '410px';
-}
+    // Create physics body for character
+    let characterBody = new CANNON.Body({
+      type: CANNON.Body.DYNAMIC,
+      shape: new CANNON.Sphere(1),
+      position: new CANNON.Vec3(0, 10, 0),
+      mass: 1
+    });
+    characterBody.linearDamping = 0.9; // Add some damping to prevent the character from bouncing around
+    world.addBody(characterBody);
 
-function shootRight(){
-van ran = Math.random();
+    console.log("Physics body for character created and added to world");
 
-while(parseInt(ball.style.top != 300){
-ball.style.left = parseInt(ball.style.left) + 1 + 'px';
-ball.style.top = parseInt(ball.style.top) - 1 + 'px';
-animate = setTimeout(shootRight,20);
-}
-if(ran>0.7){
-score = score + 1;
-document.getElementById('score').innerHTML = score;
-}
-else{
-document.getElementById('score').innerHTML = score;
-}
-x++;
-if(x==10){
-document.getElementById('gameover').innerHTML = "Game over! You got a score of " + score;
-}
-ball.style.left = '300px';
-ball.style.top = '410px';
-}
+    // Create cylinder for camera attachment
+    let cylinderGeometry = new THREE.CylinderGeometry(1, 1, 5, 32);
+    let cylinderMaterial = new THREE.MeshBasicMaterial({ color: 0x0000ff }); // Blue cylinder
+    let cylinder = new THREE.Mesh(cylinderGeometry, cylinderMaterial);
+    cylinder.position.y = 10; // Position cylinder at y = 10
+    scene.add(cylinder);
 
-}
+    console.log("Cylinder created and added to scene");
 
+    // Attach camera to cylinder
+    characterCamera.position.set(0, 5, 0); // Position camera at top of cylinder
+    cylinder.add(characterCamera);
 
-</script>
+    console.log("Camera attached to cylinder");
 
+    // Set up camera controls
+    let cameraControls = new THREE.FirstPersonControls(characterCamera, canvas);
+    cameraControls.movementSpeed = 5; // Enable movement speed
+    cameraControls.lookSpeed = 0.1; // Enable look speed
+    cameraControls.lookVertical = true; // Enable vertical look
+    cameraControls.autoForward = true; // Enable auto-forward movement
+    cameraControls.minPolarAngle = Math.PI / 4; // Limit looking up to 45 degrees
+    cameraControls.maxPolarAngle = Math.PI - Math.PI / 4; // Limit looking down to 45 degrees
+
+    console.log("Camera controls setup complete");
+
+    // Add some basic lighting to the scene
+    let ambientLight = new THREE.AmbientLight(0x444444);
+    scene.add(ambientLight);
+
+    let directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+    directionalLight.position.set(0, 0, 1);
+    scene.add(directionalLight);
+
+    console.log("Lighting added to scene");
+
+    function animate() {
+      console.log("Animating...");
+      requestAnimationFrame(animate);
+      world.step(1 / 60); // Update physics world
+      character.position.copy(characterBody.position); // Update character position
+      cylinder.position.copy(character.position); // Update cylinder position
+      cylinder.rotation.y = character.rotation.y; // Update cylinder rotation
+      characterCamera.rotation.x = cylinder.rotation.x; // Update camera rotation
+      renderer.render(scene, characterCamera);
+
+      // Update character position based on velocity
+      character.position.x += characterBody.velocity.x;
+      character.position.y += characterBody.velocity.y;
+      character.position.z += characterBody.velocity.z;
+
+      // Update character rotation based on mouse movement
+      let rotationSpeed = 0.01;
+      character.rotation.y += (characterBody.velocity.x * rotationSpeed);
+      character.rotation.x += (characterBody.velocity.z * rotationSpeed);
+    }
+    animate();
+
+    console.log("Animation started");
+
+    let mouseMoveHandler = (e) => {
+      let centerX = canvas.width / 2;
+      let centerY = canvas.height / 2;
+      let x = e.clientX;
+      let y = e.clientY;
+      let dx = x - centerX;
+      let dy = y - centerY;
+      let speed = 0.1; // Adjust this value to match the speed of the mouse
+      characterBody.velocity.x = dx * speed;
+      characterBody.velocity.z = dy * speed ;
+      cylinder.rotation.y += dx * speed * 0.01; // Rotate cylinder based on mouse movement
+      cylinder.rotation.x += dy * speed * 0.01; // Rotate cylinder based on mouse movement
+    };
+    canvas.addEventListener("mousemove", mouseMoveHandler);
+
+    // Lock mouse to center of canvas
+    canvas.requestPointerLock = canvas.requestPointerLock || canvas.mozRequestPointerLock;
+    canvas.requestPointerLock();
+
+    document.addEventListener("mousemove", (e) => {
+      let centerX = canvas.width / 2;
+      let centerY = canvas.height / 2;
+      let x = centerX;
+      let y = centerY;
+      let dx = x - centerX;
+      let dy = y - centerY;
+      let speed = 0.1; // Adjust this value to match the speed of the mouse
+      characterBody.velocity.x = dx * speed;
+      characterBody.velocity.z = dy * speed ;
+      cylinder.rotation.y += dx * speed * 0.01; // Rotate cylinder based on mouse movement
+      cylinder.rotation.x += dy * speed * 0.01; // Rotate cylinder based on mouse movement
+    });
+  </script>
 </body>
-
-
 </html>
