@@ -94,6 +94,21 @@
 
     console.log("Physics body for character created and added to world");
 
+    // Create cylinder for camera attachment
+    let cylinderGeometry = new THREE.CylinderGeometry(1, 1, 5, 32);
+    let cylinderMaterial = new THREE.MeshBasicMaterial({ color: 0x0000ff }); // Blue cylinder
+    let cylinder = new THREE.Mesh(cylinderGeometry, cylinderMaterial);
+    cylinder.position.y = 10; // Position cylinder at y = 10
+    scene.add(cylinder);
+
+    console.log("Cylinder created and added to scene");
+
+    // Attach camera to cylinder
+    characterCamera.position.set(0, 5, 0); // Position camera at top of cylinder
+    cylinder.add(characterCamera);
+
+    console.log("Camera attached to cylinder");
+
     // Set up camera controls
     let cameraControls = new THREE.FirstPersonControls(characterCamera, canvas);
     cameraControls.movementSpeed = 5; // Enable movement speed
@@ -120,8 +135,9 @@
       requestAnimationFrame(animate);
       world.step(1 / 60); // Update physics world
       character.position.copy(characterBody.position); // Update character position
-      characterCamera.position.copy(character.position); // Update character camera position
-      characterCamera.rotation.copy(character.rotation); // Update character camera rotation
+      cylinder.position.copy(character.position); // Update cylinder position
+      cylinder.rotation.y = character.rotation.y; // Update cylinder rotation
+      characterCamera.rotation.x = cylinder.rotation.x; // Update camera rotation
       renderer.render(scene, characterCamera);
 
       // Update character position based on velocity
@@ -147,7 +163,9 @@
       let dy = y - centerY;
       let speed = 0.1; // Adjust this value to match the speed of the mouse
       characterBody.velocity.x = dx * speed;
-      characterBody.velocity.z = dy * speed;
+      characterBody.velocity.z = dy * speed ;
+      cylinder.rotation.y += dx * speed * 0.01; // Rotate cylinder based on mouse movement
+      cylinder.rotation.x += dy * speed * 0.01; // Rotate cylinder based on mouse movement
     };
     canvas.addEventListener("mousemove", mouseMoveHandler);
 
@@ -167,6 +185,6 @@
         canvas.dispatchEvent(new MouseEvent("mousemove", { clientX: canvas.width / 2, clientY: canvas.height / 2 }));
       }
     });
-  </script >
+  </script>
 </body>
 </html>
