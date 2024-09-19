@@ -6,3 +6,5 @@ Sept 13:
  sept 14-16: long break school and family
 
  spet:16 leave any app you have to click ctrl+esc, also shows tiny bubble at the bottom as a hint for it. Attempted to add the floating text for Minecraft somewhere in the middle
+
+ sept 18: Made a First Person game, gonna turn it into a pve game, maybe *just a small chance* 
