@@ -57,6 +57,7 @@
     let terrainGeometry = new THREE.PlaneGeometry(100, 100, 10, 10); // Create a plane with 10x10 segments
     let terrainMaterial = new THREE.MeshBasicMaterial({ color: 0x32CD32 }); // Green ground
     let terrain = new THREE.Mesh(terrainGeometry, terrainMaterial);
+    terrain.scale.set(10, 1, 10); // Scale the terrain to create a larger environment
     terrain.position.y = -0.5; // Position terrain at y = -0.5
     scene.add(terrain);
 
@@ -125,6 +126,11 @@
       character.position.x += characterBody.velocity.x;
       character.position.y += characterBody.velocity.y;
       character.position.z += characterBody.velocity.z;
+
+      // Update character rotation based on mouse movement
+      let rotationSpeed = 0.01;
+      character.rotation.y += (characterBody.velocity.x * rotationSpeed);
+      character.rotation.x += (characterBody.velocity.z * rotationSpeed);
     }
     animate();
 
@@ -133,6 +139,18 @@
     let mouseMoveHandler = (e) => {
       let centerX = canvas.width / 2;
       let centerY = canvas.height / 2;
-      let x = centerX;
-      let y = centerY;
-      let dx = x
+      let x = e.clientX;
+      let y = e.clientY;
+      let dx = x - centerX;
+      let dy = y - centerY;
+      let speed = 0.1; // Adjust this value to match the speed of the mouse
+      characterBody.velocity.x = dx * speed;
+      characterBody.velocity.z = dy * speed;
+    };
+    canvas.addEventListener("mousemove", mouseMoveHandler);
+
+    // Set initial mouse position to the center of the canvas
+    canvas.dispatchEvent(new MouseEvent("mousemove", { clientX: canvas.width / 2, clientY: canvas.height / 2 }));
+  </script>
+</body>
+</html>
