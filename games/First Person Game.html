@@ -100,6 +100,8 @@
     cameraControls.lookSpeed = 0.1; // Enable look speed
     cameraControls.lookVertical = true; // Enable vertical look
     cameraControls.autoForward = true; // Enable auto-forward movement
+    cameraControls.minPolarAngle = Math.PI / 4; // Limit looking up to 45 degrees
+    cameraControls.maxPolarAngle = Math.PI - Math.PI / 4; // Limit looking down to 45 degrees
 
     console.log("Camera controls setup complete");
 
@@ -151,6 +153,20 @@
 
     // Set initial mouse position to the center of the canvas
     canvas.dispatchEvent(new MouseEvent("mousemove", { clientX: canvas.width / 2, clientY: canvas.height / 2 }));
-  </script>
+
+    // Lock mouse to center of canvas until R is pressed
+    let mouseLocked = true;
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "r") {
+        mouseLocked = false;
+      }
+    });
+    document.addEventListener("mousemove", (e) => {
+      if (mouseLocked) {
+        e.preventDefault();
+        canvas.dispatchEvent(new MouseEvent("mousemove", { clientX: canvas.width / 2, clientY: canvas.height / 2 }));
+      }
+    });
+  </script >
 </body>
 </html>
