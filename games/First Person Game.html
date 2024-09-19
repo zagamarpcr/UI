@@ -149,56 +149,42 @@
       let rotationSpeed = 0.01;
       character.rotation.y += (characterBody.velocity.x * rotationSpeed);
       character.rotation.x += (characterBody.velocity.z * rotationSpeed);
-
-      // Boundary checks for camera rotation
-      if (character Camera.rotation.x > Math.PI / 4) {
-        characterCamera.rotation.x = Math.PI / 4;
-      } else if (characterCamera.rotation.x < -Math.PI / 4) {
-        characterCamera.rotation.x = -Math.PI / 4;
-      }
-      if (characterCamera.rotation.y > Math.PI / 2) {
-        characterCamera.rotation.y = Math.PI / 2;
-      } else if (characterCamera.rotation.y < -Math.PI / 2) {
-        characterCamera.rotation.y = -Math.PI / 2;
-      }
     }
     animate();
 
     console.log("Animation started");
 
-    let locked = false;
+    let mouseMoveHandler = (e) => {
+      let centerX = canvas.width / 2;
+      let centerY = canvas.height / 2;
+      let x = e.clientX;
+      let y = e.clientY;
+      let dx = x - centerX;
+      let dy = y - centerY;
+      let speed = 0.1; // Adjust this value to match the speed of the mouse
+      characterBody.velocity.x = dx * speed;
+      characterBody.velocity.z = dy * speed ;
+      cylinder.rotation.y += dx * speed * 0.01; // Rotate cylinder based on mouse movement
+      cylinder.rotation.x += dy * speed * 0.01; // Rotate cylinder based on mouse movement
+    };
+    canvas.addEventListener("mousemove", mouseMoveHandler);
 
-    canvas.addEventListener("click", () => {
-      if (!locked) {
-        canvas.requestPointerLock = canvas.requestPointerLock || canvas.mozRequestPointerLock;
-        canvas.requestPointerLock();
-        locked = true;
-      }
-    });
-
-    document.addEventListener("pointerlockchange", () => {
-      if (document.pointerLockElement === canvas) {
-        console.log("Pointer lock acquired");
-      } else {
-        console.log("Pointer lock lost");
-        locked = false;
-      }
-    });
+    // Lock mouse to center of canvas
+    canvas.requestPointerLock = canvas.requestPointerLock || canvas.mozRequestPointerLock;
+    canvas.requestPointerLock();
 
     document.addEventListener("mousemove", (e) => {
-      if (locked) {
-        let centerX = canvas.width / 2;
-        let centerY = canvas.height / 2;
-        let x = e.clientX;
-        let y = e.clientY;
-        let dx = x - centerX;
-        let dy = y - centerY;
-        let speed = 0.1; // Adjust this value to match the speed of the mouse
-        characterBody.velocity.x = dx * speed;
-        characterBody.velocity.z = dy * speed;
-        cylinder.rotation.y += dx * speed * 0.01; // Rotate cylinder based on mouse movement
-        cylinder.rotation.x += dy * speed * 0.01; // Rotate cylinder based on mouse movement
-      }
+      let centerX = canvas.width / 2;
+      let centerY = canvas.height / 2;
+      let x = centerX;
+      let y = centerY;
+      let dx = x - centerX;
+      let dy = y - centerY;
+      let speed = 0.1; // Adjust this value to match the speed of the mouse
+      characterBody.velocity.x = dx * speed;
+      characterBody.velocity.z = dy * speed ;
+      cylinder.rotation.y += dx * speed * 0.01; // Rotate cylinder based on mouse movement
+      cylinder.rotation.x += dy * speed * 0.01; // Rotate cylinder based on mouse movement
     });
   </script>
 </body>
