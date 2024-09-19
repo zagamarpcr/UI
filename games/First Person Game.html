@@ -89,19 +89,18 @@
 
     console.log("Physics body for character created and added to world");
 
+    // Create camera for character
+    let characterCamera = new THREE.PerspectiveCamera(75, canvas.width / canvas.height, 0.1, 1000);
+    characterCamera.position.copy(character.position);
+
+    console.log("Character camera created");
+
     // Set up camera controls
-    let cameraControls = new THREE.FirstPersonControls(camera, canvas);
+    let cameraControls = new THREE.FirstPersonControls(characterCamera, canvas);
     cameraControls.movementSpeed = 0; // Disable movement speed
     cameraControls.lookSpeed = 0; // Disable look speed
 
     console.log("Camera controls setup complete");
-
-    // Set up camera position and rotation
-    camera.position.z = 10; // Move camera back to see the scene
-    camera.position.y = 10; // Move camera up to see the character
-    camera.rotation.x = -Math.PI / 4; // Look down at an angle
-
-    console.log("Camera position and rotation setup complete");
 
     // Add some basic lighting to the scene
     let ambientLight = new THREE.AmbientLight(0x444444);
@@ -118,7 +117,9 @@
       requestAnimationFrame(animate);
       world.step(1 / 60); // Update physics world
       character.position.copy(characterBody.position); // Update character position
-      renderer.render(scene, camera);
+      characterCamera.position.copy(character.position); // Update character camera position
+      characterCamera.rotation.copy(character.rotation); // Update character camera rotation
+      renderer.render(scene, characterCamera);
     }
     animate();
 
@@ -127,9 +128,8 @@
     let mouseMoveHandler = (e) => {
       let x = e.clientX;
       let y = e.clientY;
-      camera.position.x = x;
-      camera.position.y = y;
-      camera.lookAt(new THREE.Vector3(0, 0, 0));
+      characterCamera.rotation.x = y / canvas.height * Math.PI;
+      characterCamera.rotation.y = x / canvas.width * Math.PI;
     };
     document.addEventListener("mousemove", mouseMoveHandler);
 
