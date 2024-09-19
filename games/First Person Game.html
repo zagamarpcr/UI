@@ -37,6 +37,7 @@
     }
     let scene = new THREE.Scene();
     let characterCamera = new THREE.PerspectiveCamera(75, canvas.width / canvas.height, 0.1, 1000);
+    characterCamera.rotation.set(0, 0, 0, 1); // Look straight ahead
     let renderer = new THREE.WebGLRenderer({
       canvas: canvas,
       antialias: true
@@ -130,15 +131,8 @@
     console.log("Animation started");
 
     let mouseMoveHandler = (e) => {
-      let x = e.clientX;
-      let y = e.clientY;
-      let dx = x - canvas.width / 2;
-      let dy = y - canvas.height / 2;
-      let speed = 0.1; // Adjust this value to match the speed of the mouse
-      characterBody.velocity.x = dx * speed;
-      characterBody.velocity.z = dy * speed;
-    };
-    canvas.addEventListener("mousemove", mouseMoveHandler);
-  </script>
-</body>
-</html>
+      let centerX = canvas.width / 2;
+      let centerY = canvas.height / 2;
+      let x = centerX;
+      let y = centerY;
+      let dx = x
