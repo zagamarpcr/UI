@@ -34,7 +34,7 @@
       console.error("Failed to create WebGL context");
     }
     let scene = new THREE.Scene();
-    let camera = new THREE.PerspectiveCamera(75, canvas.width / canvas.height, 0.1, 1000);
+    let characterCamera = new THREE.PerspectiveCamera(75, canvas.width / canvas.height, 0.1, 1000);
     let renderer = new THREE.WebGLRenderer({
       canvas: canvas,
       antialias: true
@@ -88,12 +88,6 @@
     world.addBody(characterBody);
 
     console.log("Physics body for character created and added to world");
-
-    // Create camera for character
-    let characterCamera = new THREE.PerspectiveCamera(75, canvas.width / canvas.height, 0.1, 1000);
-    characterCamera.position.copy(character.position);
-
-    console.log("Character camera created");
 
     // Set up camera controls
     let cameraControls = new THREE.FirstPersonControls(characterCamera, canvas);
