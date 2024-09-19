@@ -42,7 +42,7 @@
       antialias: true
     });
     renderer.setSize(canvas.width, canvas.height); // Set renderer size
-    renderer.setClearColor(0xffffff, 1); // Set clear color to white
+    renderer.setClearColor(0x87CEEB, 1); // Set clear color to sky blue
 
     console.log("Scene and camera setup complete");
 
@@ -54,7 +54,7 @@
 
     // Create 3D terrain
     let terrainGeometry = new THREE.PlaneGeometry(100, 100, 10, 10); // Create a plane with 10x10 segments
-    let terrainMaterial = new THREE.MeshBasicMaterial({ color: 0xAAAAAA }); // Grey ground
+    let terrainMaterial = new THREE.MeshBasicMaterial({ color: 0x32CD32 }); // Green ground
     let terrain = new THREE.Mesh(terrainGeometry, terrainMaterial);
     terrain.position.y = -0.5; // Position terrain at y = -0.5
     scene.add(terrain);
@@ -96,6 +96,8 @@
     let cameraControls = new THREE.FirstPersonControls(characterCamera, canvas);
     cameraControls.movementSpeed = 5; // Enable movement speed
     cameraControls.lookSpeed = 0.1; // Enable look speed
+    cameraControls.lookVertical = true; // Enable vertical look
+    cameraControls.autoForward = true; // Enable auto-forward movement
 
     console.log("Camera controls setup complete");
 
