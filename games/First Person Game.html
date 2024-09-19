@@ -87,14 +87,15 @@
       position: new CANNON.Vec3(0, 10, 0),
       mass: 1
     });
+    characterBody.linearDamping = 0.9; // Add some damping to prevent the character from bouncing around
     world.addBody(characterBody);
 
     console.log("Physics body for character created and added to world");
 
     // Set up camera controls
     let cameraControls = new THREE.FirstPersonControls(characterCamera, canvas);
-    cameraControls.movementSpeed = 0; // Disable movement speed
-    cameraControls.lookSpeed = 0; // Disable look speed
+    cameraControls.movementSpeed = 5; // Enable movement speed
+    cameraControls.lookSpeed = 0.1; // Enable look speed
 
     console.log("Camera controls setup complete");
 
@@ -129,30 +130,13 @@
     let mouseMoveHandler = (e) => {
       let x = e.clientX;
       let y = e.clientY;
-      characterCamera.rotation.x = y / canvas.height * Math.PI;
-      characterCamera.rotation.y = x / canvas.width * Math.PI;
-      characterCamera.position.x = x / canvas.width * 10 - 5; // Update camera position x
-      characterCamera.position.y = y / canvas.height * 10 - 5; // Update camera position y
+      let dx = x - canvas.width / 2;
+      let dy = y - canvas.height / 2;
+      let speed = 0.1; // Adjust this value to match the speed of the mouse
+      characterBody.velocity.x = dx * speed;
+      characterBody.velocity.z = dy * speed;
     };
-    document.addEventListener("mousemove", mouseMoveHandler);
-
-    document.addEventListener("keydown", (e) => {
-      let velocity = 5;
-      switch (e.key) {
-        case "w":
-          characterBody.velocity.z = -velocity;
-          break;
-        case "s":
-          characterBody.velocity.z = velocity;
-          break;
-        case "a":
-          characterBody.velocity.x = -velocity;
-          break;
-        case "d":
-          characterBody.velocity.x = velocity;
-          break;
-      }
-    });
+    canvas.addEventListener("mousemove", mouseMoveHandler);
   </script>
 </body>
 </html>
