@@ -91,8 +91,8 @@
 
     // Set up camera controls
     let cameraControls = new THREE.FirstPersonControls(camera, canvas);
-    cameraControls.movementSpeed = 5;
-    cameraControls.lookSpeed = 0.05;
+    cameraControls.movementSpeed = 0; // Disable movement speed
+    cameraControls.lookSpeed = 0; // Disable look speed
 
     console.log("Camera controls setup complete");
 
@@ -118,7 +118,6 @@
       requestAnimationFrame(animate);
       world.step(1 / 60); // Update physics world
       character.position.copy(characterBody.position); // Update character position
-      cameraControls.update(1 / 60); // Update camera controls
       renderer.render(scene, camera);
     }
     animate();
@@ -128,7 +127,9 @@
     let mouseMoveHandler = (e) => {
       let x = e.clientX;
       let y = e.clientY;
-      cameraControls.lookAt(new THREE.Vector3(x, y, 0));
+      camera.position.x = x;
+      camera.position.y = y;
+      camera.lookAt(new THREE.Vector3(0, 0, 0));
     };
     document.addEventListener("mousemove", mouseMoveHandler);
 
