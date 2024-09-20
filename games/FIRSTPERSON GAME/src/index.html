@@ -31,14 +31,12 @@
             pointer-events: none;
             z-index: 1001;
         }
-        #reticle {
+        #score {
             position: absolute;
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            top: calc(100% - 50px);
+            top: 10px;
             right: 10px;
-            pointer-events: none;
+            color: white;
+            font-size: 24px;
             z-index: 1001;
         }
     </style>
@@ -53,7 +51,8 @@
         Look: MOUSE
     </div>
     <div id="crosshair"></div>
-    
+    <div id="score">Score: 0</div>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script>
         // FirstPersonControls constructor
@@ -138,48 +137,73 @@
             document.addEventListener('keyup', onKeyUp, false);
         };
 
-        function shootBeam(origin, direction) {
-            var totalParticles = 100;
-            var pointsGeometry = new THREE.Geometry();
-            var colors = [];
-            var beamLength = 50;
+        let score = 0;
+        const enemies = [];
+        let enemyCount = 0;
+        const enemySpawnInterval = 5000;
 
-            for (var i = 0; i < totalParticles; i++) {
-                var position = new THREE.Vector3().copy(direction).multiplyScalar((i / totalParticles) * beamLength).add(origin);
-                pointsGeometry.vertices.push(position);
+        function createEnemy() {
+            const geometry = new THREE.BufferGeometry();
+            const vertices = new Float32Array([
+                0, 0.5, 0,
+                -0.5, -0.5, 0,
+                0.5, -0.5, 0
+            ]);
+            geometry.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
+            const material = new THREE.MeshBasicMaterial({ color: Math.random() * 0xffffff });
+            const enemy = new THREE.Mesh(geometry, material);
+            enemy.position.set((Math.random() - 0.5) * 10, 0.5, (Math.random() - 0.5) * 10);
+            enemy.userData = { hit: false };
+            scene.add(enemy);
+            enemies.push(enemy);
+        }
+
+        function shootBeam(origin, direction) {
+            const totalParticles = 100;
+            const pointsGeometry = new THREE.BufferGeometry();
+            const colors = [];
+            const positions = new Float32Array(totalParticles * 3);
+            const beamLength = 50;
+
+            for (let i = 0; i < totalParticles; i++) {
+                const position = new THREE.Vector3().copy(direction).multiplyScalar((i / totalParticles) * beamLength).add(origin);
+                positions.set([position.x, position.y, position.z], i * 3);
                 colors.push(new THREE.Color(Math.random() * 0xffffff));
             }
-            pointsGeometry.colors = colors;
+            pointsGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+            pointsGeometry.setAttribute('color', new THREE.BufferAttribute(new Float32Array(colors.flat()), 3));
 
-            var pointsMaterial = new THREE.PointsMaterial({
+            const pointsMaterial = new THREE.PointsMaterial({
                 size: 0.2,
                 sizeAttenuation: true,
                 depthWrite: false,
                 blending: THREE.AdditiveBlending,
                 transparent: true,
-                vertexColors: THREE.VertexColors
+                vertexColors: true
             });
 
-            var points = new THREE.Points(pointsGeometry, pointsMaterial);
+            const points = new THREE.Points(pointsGeometry, pointsMaterial);
             scene.add(points);
 
-            // Animate the beam
-            points.update = function() {
-                for (var j = 0; j < pointsGeometry.vertices.length; j++) {
-                    pointsGeometry.vertices[j].y -= 0.2; // Particles move downwards
-                    if (pointsGeometry.vertices[j].y < 0) {
-                        pointsGeometry.vertices.splice(j, 1);
-                        j--;
+            // Check for hits
+            const beamDirection = new THREE.Vector3().copy(direction).normalize();
+            for (let enemy of enemies) {
+                if (!enemy.userData.hit) {
+                    const distance = enemy.position.distanceTo(origin);
+                    if (distance < beamLength) {
+                        const hit = beamDirection.dot(enemy.position.clone().sub(origin).normalize()) > 0.7; // Adjust the threshold
+                        if (hit) {
+                            enemy.userData.hit = true;
+                            scene.remove(enemy);
+                            score++;
+                            document.getElementById('score').innerText = `Score: ${score}`;
+                        }
                     }
                 }
-                pointsGeometry.verticesNeedUpdate = true;
-                if (pointsGeometry.vertices.length === 0) {
-                    scene.remove(points);
-                }
-            };
+            }
         }
 
-        var camera, scene, renderer, controls, coneReticle;
+        let camera, scene, renderer, controls;
 
         init();
         animate();
@@ -197,29 +221,27 @@
             controls = new THREE.FirstPersonControls(camera);
             controls.enabled = false;
 
-            // Create a cone to serve as the reticle
-            var geometry = new THREE.ConeGeometry(0.1, 0.5, 32);
-            var material = new THREE.MeshBasicMaterial({ color: 0xff0000 });
-            coneReticle = new THREE.Mesh(geometry, material);
-            coneReticle.position.z = -1; // Place it in front of the camera
-            camera.add(coneReticle);
-
             // Light
-            var light = new THREE.HemisphereLight(0xffffff, 0x444444);
+            const light = new THREE.HemisphereLight(0xffffff, 0x444444);
             light.position.set(0, 200, 0);
             scene.add(light);
 
             // Event Listeners
-            document.addEventListener('click', function() {
-                if (!controls.enabled) {
-                    controls.enabled = true;
-                    document.getElementById('instructions').style.display = 'none';
-                } else {
-                    shootBeam(camera.position, camera.getWorldDirection(new THREE.Vector3()));
+            document.addEventListener('click', onClick, false);
+            document.addEventListener('keydown', function(event) {
+                if (event.code === 'Space') {
+                    controls.enabled = true; // Enable controls on space press
+                    document.getElementById('instructions').style.display = 'none'; // Hide instructions
                 }
             });
 
-            window.addEventListener('resize', onWindowResize, false);
+            setInterval(createEnemy, enemySpawnInterval); // Spawn enemies every 5 seconds
+        }
+
+        function onClick(event) {
+            if (controls.enabled) {
+                shootBeam(camera.position, camera.getWorldDirection(new THREE.Vector3()));
+            }
         }
 
         function animate() {
@@ -227,14 +249,7 @@
             if (controls.enabled) {
                 controls.update();
             }
-            coneReticle.rotation.y += 0.02; // Rotate the reticle for visual effect
             renderer.render(scene, camera);
-        }
-
-        function onWindowResize() {
-            camera.aspect = window.innerWidth / window.innerHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, window.innerHeight);
         }
     </script>
 </body>
