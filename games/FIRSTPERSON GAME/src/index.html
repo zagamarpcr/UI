@@ -56,59 +56,26 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script>
         // FirstPersonControls constructor
-        THREE.FirstPersonControls = function (camera, MouseMoveSensitivity = 0.002, speed = 800.0, jumpHeight = 350.0, height = 30.0) {
-            var scope = this;
-            scope.MouseMoveSensitivity = MouseMoveSensitivity;
-            scope.speed = speed;
-            scope.height = height;
-            scope.jumpHeight = scope.height + jumpHeight;
-            scope.click = false;
-
-            var moveForward = false, moveBackward = false, moveLeft = false, moveRight = false;
-            var canJump = false, run = false;
-            var velocity = new THREE.Vector3(), direction = new THREE.Vector3(), prevTime = performance.now();
-            camera.rotation.set(0, 0, 0);
+        function FirstPersonControls(camera) {
+            this.camera = camera;
+            this.mouseMoveSensitivity = 0.002;
+            this.speed = 800.0;
+            this.jumpHeight = 350.0;
+            this.height = 30.0;
+            this.canJump = false;
+            this.enabled = false;
 
             var pitchObject = new THREE.Object3D();
             pitchObject.add(camera);
             var yawObject = new THREE.Object3D();
             yawObject.position.y = 10;
             yawObject.add(pitchObject);
-            var PI_2 = Math.PI / 2;
+            camera.rotation.set(0, 0, 0);
 
-            var onMouseMove = function (event) {
-                if (scope.enabled === false) return;
-                var movementX = event.movementX || event.mozMovementX || event.webkitMovementX || 0;
-                var movementY = event.movementY || event.mozMovementY || event.webkitMovementY || 0;
-                yawObject.rotation.y -= movementX * scope.MouseMoveSensitivity;
-                pitchObject.rotation.x -= movementY * scope.MouseMoveSensitivity;
-                pitchObject.rotation.x = Math.max(-PI_2, Math.min(PI_2, pitchObject.rotation.x));
-            };
+            var moveForward = false, moveBackward = false, moveLeft = false, moveRight = false, run = false;
+            var velocity = new THREE.Vector3(), direction = new THREE.Vector3(), prevTime = performance.now();
 
-            var onKeyDown = function (event) {
-                if (scope.enabled === false) return;
-                switch (event.keyCode) {
-                    case 38: case 87: moveForward = true; break; // W
-                    case 37: case 65: moveLeft = true; break; // A
-                    case 40: case 83: moveBackward = true; break; // S
-                    case 39: case 68: moveRight = true; break; // D
-                    case 32: if (canJump === true) velocity.y += run === false ? scope.jumpHeight : scope.jumpHeight + 50; canJump = false; break; // SPACE
-                    case 16: run = true; break; // SHIFT
-                }
-            }.bind(this);
-
-            var onKeyUp = function (event) {
-                if (scope.enabled === false) return;
-                switch (event.keyCode) {
-                    case 38: case 87: moveForward = false; break;
-                    case 37: case 65: moveLeft = false; break;
-                    case 40: case 83: moveBackward = false; break;
-                    case 39: case 68: moveRight = false; break;
-                    case 16: run = false; break;
-                }
-            }.bind(this);
-
-            scope.update = function () {
+            this.update = function() {
                 var time = performance.now();
                 var delta = (time - prevTime) / 1000;
                 velocity.y -= 9.8 * 100.0 * delta; // Gravity
@@ -117,7 +84,7 @@
                 direction.z = Number(moveForward) - Number(moveBackward);
                 direction.x = Number(moveRight) - Number(moveLeft);
                 direction.normalize();
-                var currentSpeed = scope.speed;
+                var currentSpeed = this.speed;
                 if (run && (moveForward || moveBackward || moveLeft || moveRight)) {
                     currentSpeed += currentSpeed * 0.1;
                 }
@@ -128,14 +95,42 @@
                     velocity.x -= direction.x * currentSpeed * delta;
                 }
                 camera.position.add(velocity.clone().multiplyScalar(delta));
-                camera.position.y = scope.height; // Maintain height
+                camera.position.y = this.height; // Maintain height
                 prevTime = time;
             };
 
-            document.addEventListener('mousemove', onMouseMove, false);
-            document.addEventListener('keydown', onKeyDown, false);
-            document.addEventListener('keyup', onKeyUp, false);
-        };
+            document.addEventListener('mousemove', (event) => {
+                if (!this.enabled) return;
+                var movementX = event.movementX || 0;
+                var movementY = event.movementY || 0;
+                yawObject.rotation.y -= movementX * this.mouseMoveSensitivity;
+                pitchObject.rotation.x -= movementY * this.mouseMoveSensitivity;
+                pitchObject.rotation.x = Math.max(-Math.PI / 2, Math.min(Math.PI / 2, pitchObject.rotation.x));
+            });
+
+            document.addEventListener('keydown', (event) => {
+                if (!this.enabled) return;
+                switch (event.keyCode) {
+                    case 38: case 87: moveForward = true; break; // W
+                    case 37: case 65: moveLeft = true; break; // A
+                    case 40: case 83: moveBackward = true; break; // S
+                    case 39: case 68: moveRight = true; break; // D
+                    case 32: if (this.canJump) velocity.y += this.jumpHeight; this.canJump = false; break; // SPACE
+                    case 16: run = true; break; // SHIFT
+                }
+            });
+
+            document.addEventListener('keyup', (event) => {
+                if (!this.enabled) return;
+                switch (event.keyCode) {
+                    case 38: case 87: moveForward = false; break;
+                    case 37: case 65: moveLeft = false; break;
+                    case 40: case 83: moveBackward = false; break;
+                    case 39: case 68: moveRight = false; break;
+                    case 16: run = false; break;
+                }
+            });
+        }
 
         let score = 0;
         const enemies = [];
@@ -218,7 +213,7 @@
             renderer.setSize(window.innerWidth, window.innerHeight);
             document.body.appendChild(renderer.domElement);
 
-            controls = new THREE.FirstPersonControls(camera);
+            controls = new FirstPersonControls(camera);
             controls.enabled = false;
 
             // Light
