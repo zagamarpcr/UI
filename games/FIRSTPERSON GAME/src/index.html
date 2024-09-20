@@ -139,8 +139,8 @@
 
         let score = 0;
         const enemies = [];
-        let enemyCount = 0;
         const enemySpawnInterval = 5000;
+        const enemySpeed = 0.02;
 
         function createEnemy() {
             const geometry = new THREE.BufferGeometry();
@@ -248,6 +248,17 @@
             requestAnimationFrame(animate);
             if (controls.enabled) {
                 controls.update();
+                enemies.forEach(enemy => {
+                    // Move enemy towards camera
+                    const direction = new THREE.Vector3();
+                    direction.subVectors(camera.position, enemy.position).normalize().multiplyScalar(enemySpeed);
+                    enemy.position.add(direction);
+                    // Remove enemy if it gets too close
+                    if (enemy.position.distanceTo(camera.position) < 1) {
+                        scene.remove(enemy);
+                        enemies.splice(enemies.indexOf(enemy), 1); // Remove from array
+                    }
+                });
             }
             renderer.render(scene, camera);
         }
