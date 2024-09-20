@@ -137,14 +137,14 @@ THREE.FirstPersonControls = function ( camera, MouseMoveSensitivity = 0.002, spe
   scope.update = function () {
 
     var time = performance.now();
-    var delta = ( time - prevTime ) / 1000;
+    var delta = (time - prevTime) / 1000;
 
     velocity.y -= 9.8 * 100.0 * delta;
     velocity.x -= velocity.x * 10.0 * delta;
     velocity.z -= velocity.z * 10.0 * delta;
 
-    direction.z = Number( moveForward ) - Number( moveBackward );
-    direction.x = Number( moveRight ) - Number( moveLeft );
+    direction.z = Number(moveForward) - Number(moveBackward);
+    direction.x = Number(moveRight) - Number(moveLeft);
     direction.normalize();
 
     var currentSpeed = scope.speed;
@@ -152,51 +152,18 @@ THREE.FirstPersonControls = function ( camera, MouseMoveSensitivity = 0.002, spe
         currentSpeed += currentSpeed * 1.1;
     }
 
-    if ( moveForward || moveBackward ) {
+    if (moveForward || moveBackward) {
         velocity.z -= direction.z * currentSpeed * delta;
     }
-    if ( moveLeft || moveRight ) {
+    if (moveLeft || moveRight) {
         velocity.x -= direction.x * currentSpeed * delta;
     }
 
-    // ** Start Collision Detection Code **
+    // Create a bounding box for the character
     var characterBox = new THREE.Box3().setFromObject(scope.getObject());
 
-    for (var i = 0; i < cubes.length; i++) {
-        var cubeBox = new THREE.Box3().setFromObject(cubes[i]);
+    // Store the original
 
-        // Check if the character's bounding box intersects with the cube's bounding box
-        if (characterBox.intersectsBox(cubeBox)) {
-            // Handle collision
-            if (velocity.x > 0) {
-                scope.getObject().position.x = cubeBox.min.x - (characterBox.max.x - characterBox.min.x) / 2;
-            } else if (velocity.x < 0) {
-                scope.getObject().position.x = cubeBox.max.x + (characterBox.max.x - characterBox.min.x) / 2;
-            }
-            if (velocity.z > 0) {
-                scope.getObject().position.z = cubeBox.min.z - (characterBox.max.z - characterBox.min.z) / 2;
-            } else if (velocity.z < 0) {
-                scope.getObject().position.z = cubeBox.max.z + (characterBox.max.z - characterBox.min.z) / 2;
-            }
-
-            // Reset vertical velocity if needed
-            velocity.y = 0;
-        }
-    }
-    // ** End Collision Detection Code **
-
-    scope.getObject().translateX( -velocity.x * delta );
-    scope.getObject().translateZ( velocity.z * delta );
-    
-    scope.getObject().position.y += ( velocity.y * delta );
-
-    if ( scope.getObject().position.y < scope.height ) {
-        velocity.y = 0;
-        scope.getObject().position.y = scope.height;
-        canJump = true;
-    }
-    prevTime = time;
-};
 
 
 var instructions = document.querySelector("#instructions");
