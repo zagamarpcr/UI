@@ -1,13 +1,56 @@
-<body style="margin: 0;">
-		<div id="instructions">
-			<div>
-				<h1>Click to begin</h1>
-				
-				Shoot: LEFT MOUSE CLICK<br/>
-				Move: W-A-S-D or ARROWS<br/>
-				Run: SHIFT<br/>
-				Jump: SPACE<br/>
-				Look: MOUSE
-			</div>
-		</div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Three.js First Person Controls</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+        }
+        #instructions {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            color: white;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 10px;
+            border-radius: 5px;
+        }
+        #crosshair {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background-color: red;
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            pointer-events: none; /* Prevent the crosshair from capturing mouse events */
+        }
+    </style>
+</head>
+<body>
+    <div id="instructions">
+        <div>
+            <h1>Click to begin</h1>
+            Shoot: LEFT MOUSE CLICK<br/>
+            Move: W-A-S-D or ARROWS<br/>
+            Run: SHIFT<br/>
+            Jump: SPACE<br/>
+            Look: MOUSE
+        </div>
+    </div>
+    <div id="crosshair"></div>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    
+    <script>
+        // Your JavaScript code here (from the previous response)
+        // Include the entire Three.js setup and functionality code here
+    </script>
 </body>
+</html>
