@@ -1,3 +1,4 @@
+// FirstPersonControls constructor
 THREE.FirstPersonControls = function (camera, MouseMoveSensitivity = 0.002, speed = 800.0, jumpHeight = 350.0, height = 30.0) {
   var scope = this;
 
@@ -120,7 +121,7 @@ THREE.FirstPersonControls = function (camera, MouseMoveSensitivity = 0.002, spee
       var time = performance.now();
       var delta = (time - prevTime) / 1000;
 
-      velocity.y -= 9.8 * 100.0 * delta;
+      velocity.y -= 9.8 * 100.0 * delta; // Gravity
       velocity.x -= velocity.x * 10.0 * delta;
       velocity.z -= velocity.z * 10.0 * delta;
 
@@ -130,7 +131,7 @@ THREE.FirstPersonControls = function (camera, MouseMoveSensitivity = 0.002, spee
 
       var currentSpeed = scope.speed;
       if (run && (moveForward || moveBackward || moveLeft || moveRight)) {
-          currentSpeed += currentSpeed * 1.1;
+          currentSpeed += currentSpeed * 0.1; // Slightly increase speed when running
       }
 
       if (moveForward || moveBackward) {
@@ -147,7 +148,7 @@ THREE.FirstPersonControls = function (camera, MouseMoveSensitivity = 0.002, spee
   };
 };
 
-// Create a function to shoot a beam of particles
+// Function to shoot a beam of particles
 function shootBeam(origin, direction) {
   var totalParticles = 100; // Number of particles in the beam
   var pointsGeometry = new THREE.Geometry();
@@ -246,7 +247,7 @@ function init() {
   floor.receiveShadow = true;
   world.add(floor);
 
-  // Objects
+  // Random Boxes
   var boxGeometry = new THREE.BoxBufferGeometry(1, 1, 1);
   boxGeometry.translate(0, 0.5, 0);
 
@@ -273,12 +274,14 @@ function init() {
   document.addEventListener('keyup', onKeyUp, false);
 }
 
+// Resize event handler
 function onWindowResize() {
   camera.aspect = window.innerWidth / window.innerHeight;
   camera.updateProjectionMatrix();
   renderer.setSize(window.innerWidth, window.innerHeight);
 }
 
+// Animation loop
 function animate() {
   requestAnimationFrame(animate);
 
@@ -291,7 +294,6 @@ function animate() {
       scene.add(arrow);
 
       if (controls.click === true) {
-          // Call the shooting logic in the mouse down
           var direction = new THREE.Vector3();
           camera.getWorldDirection(direction);
           shootBeam(camera.position, direction);
@@ -308,3 +310,20 @@ function animate() {
 
   renderer.render(scene, camera);
 }
+
+// Crosshair setup
+function createCrosshair() {
+  const crosshair = document.createElement('div');
+  crosshair.style.position = 'absolute';
+  crosshair.style.width = '20px';
+  crosshair.style.height = '20px';
+  crosshair.style.backgroundColor = 'red';
+  crosshair.style.borderRadius = '50%';
+  crosshair.style.top = '50%';
+  crosshair.style.left = '50%';
+  crosshair.style.transform = 'translate(-50%, -50%)';
+  document.body.appendChild(crosshair);
+}
+
+// Call createCrosshair when the script loads
+createCrosshair();
