@@ -1,0 +1,64 @@
+@import url('variables.css');
+@import url('ui.css');
+@import url('floor.css');
+@import url('box.css');
+@import url('aim.css');
+@import url('gun.css');
+@import url('building.css');
+@import url('enemy.css');
+@import url('map.css');
+@import url('../env/box2.css');
+@import url('../guns/pistol.css');
+@import url('../env/building1.css');
+@import url('../enemies/enemy.css');
+
+
+body{
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    /* background: url('../assets/Latest\ posts\ of_\ \ s-spooky\ g-g-ghosts.png') no-repeat center center/cover; */
+    background: linear-gradient(rgb(1, 0, 9), rgb(21, 0, 60));
+}
+
+body div {
+    transform-style: preserve-3d;
+}
+
+.moon{
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    /* background: url('../assets/sprites/moon.png') no-repeat center center/cover; */
+    background-color: #d8d8d8;
+    position: fixed;
+    left: 15rem;
+    top: 2rem;
+    box-shadow:
+    0 0 60px 30px #afafaf,
+    0 0 100px 60px rgb(59, 59, 59),
+    0 0 140px 90px rgb(0, 40, 74);
+}
+
+.arena{
+    width: 1366px;
+    height: 657px;
+    perspective: 3000px; 
+    position: relative;
+    top: 100px;   
+    /* animation: rotate 10s infinite 0s;   */
+}
+@keyframes rotate {
+    0%{
+        transform: rotateX(-10deg) rotateY(0deg);
+    }
+    
+    50%{
+        transform: rotateX(20deg) rotateY(360deg);
+    }
+    
+    100% {
+        transform: rotateX(-10deg) rotateY(0deg);
+    }
+}
+

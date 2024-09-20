@@ -1,42 +1,169 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css"
-        integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous">
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"
-        integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="./css/style.css" />
-    <script src="js/script.js"></script>
-    <title>Gun Shooter Game</title>
+    <link rel="stylesheet" href="./css/main.css" />
+    <title>FPS game</title>
 </head>
-
 <body>
-    <nav class="navbar navbar-dark bg-dark">
-        <a class="navbar-brand" href="/Gun-Shoot-Game-using-HTML-javaScript/">Gun Shooter Game</a>
-        <a class="btn btn-outline-light" href="https://github.com/chetanguptamrt/Gun-Shoot-Game-using-HTML-javaScript"
-            target="_blank">Source code</a>
-    </nav>
 
-    <div class="container-md mt-4 mb-2">
-        <div class="row">
-            <div id="canvas" class="col-12 canvas">
-                <!-- <div class="ballon-green ballon">
-                    <div class="dhaga"></div>
-                </div> -->
+    <!-- <div class="map--cont">
+        <p class="vals x--val"></p>
+        <p class="vals y--val"></p>
+
+        <p style="position: absolute; top: 120px" class="enemy--list"></p> -->
+<!-- 
+        <div class="cross-air"></div>
+
+        <div class="map--arena">
+            <div class="enemy1"></div>
+
+        </div> -->
+    <!-- </div> -->
+        
+    <div class="moon"></div>
+
+    <div class="aim-cont">
+        <div class="aim">
+            <div class="aim-dot"></div>
+        </div>
+    </div>
+    
+    <div class="gun-cont">
+        <div class="gun--user">
+            <div class="pistol--gun-cont">
+                <div class="pistol-side1">
+                    <div class="pistol-top">
+                        <div class="pistol-top--front"></div>
+                        <div class="pistol-top--back"></div>
+                        <div class="pistol-top--left"></div>
+                        <div class="pistol-top--right"></div>
+                        <div class="pistol-top--top"></div>
+                        <div class="pistol-top--bottom"></div>
+                    </div>
+                    <div class="pistol-trigger">
+                        <div class="pistol-trigger--bottom"></div>
+                        <div class="pistol-trigger--bottom-left"></div>
+                        <div class="pistol-trigger--left"></div>
+    
+                        <div class="pistol-trigger--pull1"></div>
+                        <div class="pistol-trigger--pull2"></div>
+                        <div class="pistol-trigger--pull3"></div>
+                    </div>
+                    <div class="pistol-handle">
+                        <div class="pistol-handle--front"></div>
+                        <div class="pistol-handle--back"></div>
+                        <div class="pistol-handle--left"></div>
+                        <div class="pistol-handle--right"></div>
+                        <div class="pistol-handle--top"></div>
+                        <div class="pistol-handle--bottom"></div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-    <div class="text-center">
-        <p class="m-0 p-0 text-success">Enjoy the game</p>
-        <p class="text-danger">Note: Use PC & Mouse for Better Experience</p>
+
+    <div class="ui-cont"></div>
+
+    <div style="transform: rotateX(-0.0872664314rad) rotateY(0rad)" class="arena">
+
+        <div class="building1--cont">
+            <div class="building1--front">
+                <div class="building--wall1"></div>
+                <div class="building--wall2"></div>
+                <div class="building--wall3"></div>
+                <div class="building--wall4"></div>
+                <div class="building--wall5"></div>
+                <div class="building--wall6"></div>
+                <div class="building--wall7"></div>
+                <div class="building--wall8"></div>
+                <div class="building--wall9"></div>
+                <div class="building--wall10"></div>
+            </div>
+            <div class="building1--front-left"></div>
+            <div class="building1--front-right"></div>
+            <div class="building1--left"></div>
+            <div class="building1--right"></div>
+            <div class="building1--back-left"></div>
+            <div class="building1--back-right"></div>
+            <div class="building1--back"></div>
+            <div class="building1--top1"></div>
+            <div class="building1--top2"></div>
+            <div class="building1--bottom"></div>
+        </div>
+
+        <div class="box2-cont boxA">
+            <div class="box2--front"></div>
+            <div class="box2--back"></div>
+            <div class="box2--left"></div>
+            <div class="box2--right"></div>
+            <div class="box2--top"></div>
+        </div>
+
+        <div class="box2-cont boxB">
+            <div class="box2--front"></div>
+            <div class="box2--back"></div>
+            <div class="box2--left"></div>
+            <div class="box2--right"></div>
+            <div class="box2--top"></div>
+        </div>
+        
+        <div class="box box1">
+            <div class="box--front"></div>
+            <div class="box--back"></div>
+            <div class="box--left"></div>
+            <div class="box--right"></div>
+            <div class="box--top"></div>
+        </div>
+
+        <div class="box box2">
+            <div class="box--front"></div>
+            <div class="box--back"></div>   
+            <div class="box--left"></div>
+            <div class="box--right"></div>
+            <div class="box--top"></div>
+        </div>
+
+        <!-- <div class="box box3">
+            <div class="box--front"></div>
+            <div class="box--back"></div>
+            <div class="box--left"></div>
+            <div class="box--right"></div>
+            <div class="box--top"></div>
+        </div>
+
+        <div class="box box4">
+            <div class="box--front"></div>
+            <div class="box--back"></div>
+            <div class="box--left"></div>
+            <div class="box--right"></div>
+            <div class="box--top"></div>
+        </div>
+
+
+        <div class="barrel">
+            <div class="barrel--front"></div>
+            <div class="barrel--back"></div>
+            <div class="barrel--left"></div>
+            <div class="barrel--right"></div>
+            <div class="barrel--top"></div>
+        </div> -->
+        
+
+
+        <div class="floor floor1"></div>
+        <div class="floor floor2"></div>
+        <div class="floor floor3"></div>
+        <div class="floor floor4"></div>
+        <div class="floor floor5"></div>
+        <div class="floor floor6"></div>
+        <div class="floor floor7"></div>
+        <div class="floor floor8"></div>
+        <div class="floor floor9"></div>
     </div>
-    <footer class="bg-dark text-center p-2">
-        <p class="p-0 m-0">Copyright &copy; 2021 Chetan Gupta<br/>All right reserved</p>
-    </footer>
-
+<script src="./js/lib/CSS3DRenderer.js"></script>
+<script src="./js/script.js"></script>
 </body>
-
 </html>
